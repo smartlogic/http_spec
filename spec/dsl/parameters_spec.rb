@@ -2,7 +2,7 @@ require "spec_helper"
 require "http_spec/dsl/parameters"
 
 describe "parameters dsl" do
-  include DSL::Parameters
+  include HTTPSpec::DSL::Parameters
 
   parameter "name", "name of the resource", :foo => :bar
   parameter "owner", "whom is responsible for the resource"

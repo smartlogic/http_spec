@@ -2,7 +2,7 @@ require "spec_helper"
 require "http_spec/dsl/actions"
 
 describe "actions dsl" do
-  include DSL::Actions
+  include HTTPSpec::DSL::Actions
 
   [:get, :post, :put, :patch, :delete, :options, :head].each do |method|
     send(method, "/route") do

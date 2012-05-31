@@ -2,7 +2,7 @@ require "spec_helper"
 require "http_spec/dsl/headers"
 
 describe "headers dsl" do
-  include DSL::Headers
+  include HTTPSpec::DSL::Headers
 
   header "Accept", "text/html"
   header "Content-Type", "application/x-www-form-urlencoded"

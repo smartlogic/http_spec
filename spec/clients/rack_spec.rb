@@ -1,7 +1,7 @@
 require "spec_helper"
 require "http_spec/clients/rack"
 
-describe Clients::Rack do
+describe HTTPSpec::Clients::Rack do
   def app
     lambda do |env|
       request_body = env["rack.input"].read
@@ -11,7 +11,7 @@ describe Clients::Rack do
     end
   end
 
-  let(:client) { Clients::Rack.new(app) }
+  let(:client) { HTTPSpec::Clients::Rack.new(app) }
 
   def response_lines
     client.response_body.split("\n")

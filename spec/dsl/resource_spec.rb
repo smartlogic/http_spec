@@ -2,7 +2,7 @@ require "spec_helper"
 require "http_spec/dsl/resource"
 
 describe "resource dsl" do
-  include DSL::Resource
+  include HTTPSpec::DSL::Resource
 
   let(:client) { stub }
 
