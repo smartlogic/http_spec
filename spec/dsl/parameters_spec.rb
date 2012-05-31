@@ -1,3 +1,4 @@
+require "spec_helper"
 require "http_spec/dsl/parameters"
 
 describe "parameters dsl" do
