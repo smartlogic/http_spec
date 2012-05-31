@@ -10,7 +10,6 @@ module DSL
           define_method(method) do |route, &block|
             http_method = method.to_s.upcase
             metadata[:method] = method
-            metadata[:http_method] = http_method
             metadata[:route] = route
             context("#{http_method} #{route}", &block)
           end

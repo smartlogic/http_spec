@@ -6,8 +6,12 @@ module DSL
 
     def self.define_actions(*methods)
       methods.each do |method|
-        define_method(method) do |*args|
-          client.send(method, *args)
+        define_method(method) do |route, request_body=nil, request_headers=nil|
+          example.metadata[:method] = method
+          example.metadata[:route] = route
+          example.metadata[:request_headers] = request_headers
+          example.metadata[:request_body] = request_body
+          do_request
         end
       end
     end
@@ -19,11 +23,18 @@ module DSL
     alias response_status status
 
     def do_request
-      method = example.metadata[:method]
-      route = example.metadata[:route]
-      request_headers = example.metadata[:request_headers]
-      request_body = example.metadata[:request_body]
-      send(method, route, request_body, request_headers)
+      metadata = example.metadata
+
+      method = metadata[:method]
+      route = metadata[:route]
+      request_headers = metadata[:request_headers]
+      request_body = metadata[:request_body]
+
+      client.send(method, route, request_body, request_headers)
+
+      metadata[:status] = status
+      metadata[:response_headers] = response_headers
+      metadata[:response_body] = response_body
     end
   end
 end

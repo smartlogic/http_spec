@@ -13,8 +13,7 @@ describe "actions dsl" do
       end
 
       it "records the method in the example metadata" do
-        example.metadata[:method].should eq(method) # e.g., :get
-        example.metadata[:http_method].should eq(http_method) # e.g., "GET"
+        example.metadata[:method].should eq(method)
       end
 
       it "records the route in the example metadata" do
