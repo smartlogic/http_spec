@@ -1,4 +1,5 @@
 require "rspec/core/rake_task"
+require "cane/rake_task"
 
 RSpec::Core::RakeTask.new(:spec) do |config|
   # Add command line option to ensure that SimpleCov will be loaded first.
@@ -12,3 +13,14 @@ task :coverage do
 end
 
 task :default => :coverage
+
+if RUBY_ENGINE == "ruby"
+  Cane::RakeTask.new(:quality) do |cane|
+    cane.abc_max = 10
+    cane.style_measure = 80
+    cane.no_doc = true
+    cane.add_threshold 'coverage/covered_percent', :>=, 100
+  end
+
+  task :default => :quality
+end
