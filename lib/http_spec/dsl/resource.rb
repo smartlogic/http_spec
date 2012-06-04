@@ -26,7 +26,7 @@ module HTTPSpec
       def do_request
         metadata = example.metadata
 
-        metadata[:path] ||= metadata[:route]
+        metadata[:path] ||= build_path
 
         method = metadata[:method]
         path = metadata[:path]
@@ -38,6 +38,18 @@ module HTTPSpec
         metadata[:status] = status
         metadata[:response_headers] = response_headers
         metadata[:response_body] = response_body
+      end
+
+      private
+
+      def build_path
+        example.metadata[:route].gsub(/:(\w+)/) do |match|
+          if params.key?($1)
+            params[$1]
+          else
+            match
+          end
+        end
       end
     end
   end

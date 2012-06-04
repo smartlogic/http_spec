@@ -72,4 +72,16 @@ describe "resource dsl" do
     client.stub!(:status).and_return("value")
     response_status.should eq("value")
   end
+
+  context "when params are defined" do
+    let(:params) {{ "id" => "1" }}
+
+    it "combines route metadata and params to create a path",
+      :method => :get,
+      :route => "/widget/:foo/:id" do
+      client.should_receive(:get).
+        with("/widget/:foo/1", nil, nil)
+      do_request
+    end
+  end
 end
