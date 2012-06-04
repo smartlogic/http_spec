@@ -14,6 +14,10 @@ describe "parameters dsl" do
     })
   end
 
+  it "has empty params by default" do
+    params.should eq({})
+  end
+
   context "when used in nested contexts" do
     parameter "cost", "current market value of the resource"
     parameter "location", "where the resource lives"
@@ -25,6 +29,15 @@ describe "parameters dsl" do
         "cost" => { :description => "current market value of the resource" },
         "location" => { :description => "where the resource lives" }
       })
+    end
+  end
+
+  context "when the example defines methods named after parameters" do
+    let(:name) { "test name" }
+    let(:not_a_param) { "should not appear" }
+
+    it "indexes the parameter values in params" do
+      params.should eq("name" => "test name")
     end
   end
 end
