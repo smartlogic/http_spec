@@ -15,12 +15,22 @@ describe "resource dsl" do
   it "delegates simple requests to a client" do
     [:get, :post, :put, :patch, :delete, :options, :head].each do |method|
       client.should_receive(method).
-        with("/route", "request body", "Header" => "value")
-      send(method, "/route", "request body", "Header" => "value")
+        with("/path", "request body", "Header" => "value")
+      send(method, "/path", "request body", "Header" => "value")
     end
   end
 
   it "makes client requests based on metadata",
+    :method => :get,
+    :path => "/path",
+    :request_body => "request body",
+    :request_headers => { "Header" => "value" } do
+    client.should_receive(:get).
+      with("/path", "request body", "Header" => "value")
+    do_request
+  end
+
+  it "uses route metadata to construct paths",
     :method => :get,
     :route => "/route",
     :request_body => "request body",
@@ -28,13 +38,14 @@ describe "resource dsl" do
     client.should_receive(:get).
       with("/route", "request body", "Header" => "value")
     do_request
+    example.metadata[:path].should eq("/route")
   end
 
   it "records the request information as metadata" do
     client.stub!(:get)
-    get("/route", "request body", "Header" => "value")
+    get("/path", "request body", "Header" => "value")
     example.metadata[:method].should eq(:get)
-    example.metadata[:route].should eq("/route")
+    example.metadata[:path].should eq("/path")
     example.metadata[:request_body].should eq("request body")
     example.metadata[:request_headers].should eq("Header" => "value")
   end
@@ -44,7 +55,7 @@ describe "resource dsl" do
     client.stub!(:status).and_return(200)
     client.stub!(:response_headers).and_return("Header" => "value")
     client.stub!(:response_body).and_return("response body")
-    get("/route")
+    get("/path")
     example.metadata[:status].should eq(200)
     example.metadata[:response_headers].should eq("Header" => "value")
     example.metadata[:response_body].should eq("response body")
