@@ -6,11 +6,8 @@ module HTTPSpec
       def self.define_actions(*methods)
         methods.each do |method|
           define_method(method) do |path, body=nil, headers=nil|
-            example.metadata[:method] = method
-            example.metadata[:path] = path
-            example.metadata[:request_headers] = headers
-            example.metadata[:request_body] = body
-            do_request
+            request = Request.new(method, path, body, headers)
+            client.dispatch(request)
           end
         end
       end

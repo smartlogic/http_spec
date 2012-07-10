@@ -41,16 +41,8 @@ describe "resource dsl" do
     example.metadata[:path].should eq("/route")
   end
 
-  it "records the request information as metadata" do
-    get("/path", "request body", "request" => "header")
-    example.metadata[:method].should eq(:get)
-    example.metadata[:path].should eq("/path")
-    example.metadata[:request_body].should eq("request body")
-    example.metadata[:request_headers].should eq("request" => "header")
-  end
-
   it "records the response information as metadata" do
-    get("/path")
+    do_request
     example.metadata[:status].should eq(200)
     example.metadata[:response_headers].should eq("response" => "header")
     example.metadata[:response_body].should eq("response body")
