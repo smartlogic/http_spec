@@ -1,25 +1,10 @@
 require "spec_helper"
 require "http_spec/dsl/resource"
 
-class FakeClient
-  def dispatch(request)
-    HTTPSpec::Response.new(200, "response body", "response" => "header")
-  end
-end
-
 describe "resource dsl" do
   include HTTPSpec::DSL::Resource
 
   let(:client) { FakeClient.new }
-
-  it "delegates simple requests to a client" do
-    [:get, :post, :put, :patch, :delete, :options, :head].each do |method|
-      response = send(method, "/path")
-      response.status.should eq(200)
-      response.body.should eq("response body")
-      response.headers.should eq("response" => "header")
-    end
-  end
 
   it "makes client requests based on metadata",
     :method => :get,
