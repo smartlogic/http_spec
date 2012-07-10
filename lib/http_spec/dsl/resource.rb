@@ -1,10 +1,8 @@
-require "forwardable"
+require "http_spec/types"
 
 module HTTPSpec
   module DSL
     module Resource
-      extend Forwardable
-
       def self.define_actions(*methods)
         methods.each do |method|
           define_method(method) do |path, body=nil, headers=nil|
@@ -19,30 +17,31 @@ module HTTPSpec
 
       define_actions :get, :post, :put, :patch, :delete, :options, :head
 
-      def_delegators :client, :status, :response_headers, :response_body
+      def do_request
+        example.metadata[:path] ||= build_path
+        request = Request.from_metadata(example.metadata)
+        response = client.dispatch(request)
+        response.to_metadata!(example.metadata)
+        response
+      end
 
+      def status
+        example.metadata[:status]
+      end
       alias response_status status
 
-      def do_request
-        metadata = example.metadata
+      def response_headers
+        example.metadata[:response_headers]
+      end
 
-        metadata[:path] ||= build_path
-
-        method = metadata[:method]
-        path = metadata[:path]
-        request_headers = metadata[:request_headers]
-        request_body = metadata[:request_body]
-
-        client.send(method, path, request_body, request_headers)
-
-        metadata[:status] = status
-        metadata[:response_headers] = response_headers
-        metadata[:response_body] = response_body
+      def response_body
+        example.metadata[:response_body]
       end
 
       private
 
       def build_path
+        return unless example.metadata[:route]
         example.metadata[:route].gsub(/:(\w+)/) do |match|
           if params.key?($1)
             params[$1]

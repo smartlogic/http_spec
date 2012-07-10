@@ -1,22 +1,23 @@
 require "spec_helper"
 require "http_spec/dsl/resource"
 
+class FakeClient
+  def dispatch(request)
+    HTTPSpec::Response.new(200, "response body", "response" => "header")
+  end
+end
+
 describe "resource dsl" do
   include HTTPSpec::DSL::Resource
 
-  let(:client) { stub }
-
-  before do
-    client.stub!(:status)
-    client.stub!(:response_headers)
-    client.stub!(:response_body)
-  end
+  let(:client) { FakeClient.new }
 
   it "delegates simple requests to a client" do
     [:get, :post, :put, :patch, :delete, :options, :head].each do |method|
-      client.should_receive(method).
-        with("/path", "request body", "Header" => "value")
-      send(method, "/path", "request body", "Header" => "value")
+      response = send(method, "/path")
+      response.status.should eq(200)
+      response.body.should eq("response body")
+      response.headers.should eq("response" => "header")
     end
   end
 
@@ -24,63 +25,58 @@ describe "resource dsl" do
     :method => :get,
     :path => "/path",
     :request_body => "request body",
-    :request_headers => { "Header" => "value" } do
-    client.should_receive(:get).
-      with("/path", "request body", "Header" => "value")
+    :request_headers => { "request" => "header" } do
+    client.should_receive(:dispatch) do |request|
+      request.method.should eq(:get)
+      request.path.should eq("/path")
+      request.body.should eq("request body")
+      request.headers.should eq("request" => "header")
+      HTTPSpec::Response.new
+    end
     do_request
   end
 
-  it "uses route metadata to construct paths",
-    :method => :get,
-    :route => "/route",
-    :request_body => "request body",
-    :request_headers => { "Header" => "value" } do
-    client.should_receive(:get).
-      with("/route", "request body", "Header" => "value")
+  it "uses route metadata to construct paths", :route => "/route" do
     do_request
     example.metadata[:path].should eq("/route")
   end
 
   it "records the request information as metadata" do
-    client.stub!(:get)
-    get("/path", "request body", "Header" => "value")
+    get("/path", "request body", "request" => "header")
     example.metadata[:method].should eq(:get)
     example.metadata[:path].should eq("/path")
     example.metadata[:request_body].should eq("request body")
-    example.metadata[:request_headers].should eq("Header" => "value")
+    example.metadata[:request_headers].should eq("request" => "header")
   end
 
   it "records the response information as metadata" do
-    client.stub!(:get)
-    client.stub!(:status).and_return(200)
-    client.stub!(:response_headers).and_return("Header" => "value")
-    client.stub!(:response_body).and_return("response body")
     get("/path")
     example.metadata[:status].should eq(200)
-    example.metadata[:response_headers].should eq("Header" => "value")
+    example.metadata[:response_headers].should eq("response" => "header")
     example.metadata[:response_body].should eq("response body")
   end
 
-  it "delegates response methods to the client" do
-    [:status, :response_headers, :response_body].each do |method|
-      client.stub!(method).and_return("value")
-      send(method).should eq("value")
-    end
+  it "exposes response information" do
+    do_request
+    status.should eq(200)
+    response_headers.should eq("response" => "header")
+    response_body.should eq("response body")
   end
 
   it "aliases status as response_status" do
-    client.stub!(:status).and_return("value")
-    response_status.should eq("value")
+    do_request
+    response_status.should eq(200)
   end
 
   context "when params are defined" do
     let(:params) {{ "id" => "1" }}
 
     it "combines route metadata and params to create a path",
-      :method => :get,
       :route => "/widget/:foo/:id" do
-      client.should_receive(:get).
-        with("/widget/:foo/1", nil, nil)
+      client.should_receive(:dispatch) do |request|
+        request.path.should eq("/widget/:foo/1")
+        HTTPSpec::Response.new
+      end
       do_request
     end
   end

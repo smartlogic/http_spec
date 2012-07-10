@@ -1,3 +1,4 @@
+require "http_spec/types"
 require "rack/mock"
 
 module HTTPSpec
@@ -7,37 +8,20 @@ module HTTPSpec
         @session = ::Rack::MockRequest.new(app)
       end
 
-      def self.define_actions(*methods)
-        methods.each do |method|
-          define_method(method) do |path, body=nil, headers={}|
-            request(method, path, body, headers)
-          end
-        end
-      end
-
-      define_actions :get, :post, :put, :delete, :options, :head
-
-      def status
-        @last_response.status
-      end
-
-      def response_body
-        @last_response.body
-      end
-
-      def response_headers
-        @last_response.headers
+      def dispatch(request)
+        opts = headers_to_env(request.headers)
+        opts[:input] = request.body
+        from_rack @session.request(request.method, request.path, opts)
       end
 
       private
 
-      def request(method, path, request_body, request_headers)
-        opts = headers_to_env(request_headers)
-        opts[:input] = request_body
-        @last_response = @session.request(method, path, opts)
+      def from_rack(response)
+        Response.new(response.status, response.body, response.headers)
       end
 
       def headers_to_env(headers)
+        return {} unless headers
         headers.inject({}) do |env, (k, v)|
           k = k.tr("-", "_").upcase
           k = "HTTP_#{k}" unless %w{CONTENT_TYPE CONTENT_LENGTH}.include?(k)
