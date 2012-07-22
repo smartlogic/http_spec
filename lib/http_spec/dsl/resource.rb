@@ -14,10 +14,9 @@ module HTTPSpec
         def self.define_actions(*methods)
           methods.each do |method|
             define_method(method) do |route, &block|
-              http_method = method.to_s.upcase
-              metadata[:method] = method
-              metadata[:route] = route
-              context("#{http_method} #{route}", &block)
+              description = "#{method.to_s.upcase} #{route}"
+              request = Request.new(method, route)
+              context(description, :request => request, &block)
             end
           end
         end
@@ -31,15 +30,17 @@ module HTTPSpec
         end
       end
 
-      def do_request
-        example.metadata[:path] ||= build_path
-        request = Request.from_metadata(example.metadata)
-        response = client.dispatch(request)
-        response.to_metadata!(example.metadata)
-        response
+      def do_request(options = {})
+        request = example.metadata[:request]
+        build_path(request)
+        request.body = options[:body]
+        request.headers = options[:headers]
+        request.parameters = example.metadata[:parameters]
+        @last_response = client.dispatch(request)
       end
 
       def params
+        return {} unless example.metadata[:parameters]
         params = {}
         example.metadata[:parameters].each_key do |name|
           params[name] = send(name) if respond_to?(name)
@@ -48,25 +49,24 @@ module HTTPSpec
       end
 
       def status
-        example.metadata[:status]
+        @last_response.status
       end
       alias response_status status
 
       def response_headers
-        example.metadata[:response_headers]
+        @last_response.headers
       end
 
       def response_body
-        example.metadata[:response_body]
+        @last_response.body
       end
 
       private
 
-      def build_path
-        return unless example.metadata[:route]
-        example.metadata[:route].gsub(/:(\w+)/) do |match|
-          if params.key?($1)
-            params[$1]
+      def build_path(request)
+        request.path.gsub!(/:(\w+)/) do |match|
+          if respond_to?($1)
+            send($1)
           else
             match
           end
