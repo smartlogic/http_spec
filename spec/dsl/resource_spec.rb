@@ -6,6 +6,24 @@ describe "resource dsl" do
 
   let(:client) { FakeClient.new }
 
+  [:get, :post, :put, :patch, :delete, :options, :head].each do |method|
+    send(method, "/route") do
+      let(:http_method) { method.to_s.upcase }
+
+      it "creates a context with a nice description" do
+        example.example_group.description.should eq("#{http_method} /route")
+      end
+
+      it "records the method in the example metadata" do
+        example.metadata[:method].should eq(method)
+      end
+
+      it "records the route in the example metadata" do
+        example.metadata[:route].should eq("/route")
+      end
+    end
+  end
+
   it "makes client requests based on metadata",
     :method => :get,
     :path => "/path",
@@ -55,6 +73,45 @@ describe "resource dsl" do
         HTTPSpec::Response.new
       end
       do_request
+    end
+  end
+
+  describe "parameters" do
+    parameter "name", "name of the resource", :foo => :bar
+    parameter "owner", "whom is responsible for the resource"
+
+    it "records declared parameters in example metadata" do
+      example.metadata[:parameters].should eq({
+        "name" => { :description => "name of the resource", :foo => :bar },
+        "owner" => { :description => "whom is responsible for the resource" }
+      })
+    end
+
+    it "has empty params by default" do
+      params.should eq({})
+    end
+
+    context "when used in nested contexts" do
+      parameter "cost", "current market value of the resource"
+      parameter "location", "where the resource lives"
+
+      it "inherits parameters from outer contexts" do
+        example.metadata[:parameters].should eq({
+          "name" => { :description => "name of the resource", :foo => :bar },
+          "owner" => { :description => "whom is responsible for the resource" },
+          "cost" => { :description => "current market value of the resource" },
+          "location" => { :description => "where the resource lives" }
+        })
+      end
+    end
+
+    context "when the example defines methods named after parameters" do
+      let(:name) { "test name" }
+      let(:not_a_param) { "should not appear" }
+
+      it "indexes the parameter values in params" do
+        params.should eq("name" => "test name")
+      end
     end
   end
 end
