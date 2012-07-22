@@ -88,6 +88,48 @@ describe "resource dsl" do
           end
         end
       end
+
+      context "when headers are defined" do
+        header "Accept", "text/html"
+        header "Content-Type", "application/x-www-form-urlencoded"
+
+        it "records declared headers in example metadata" do
+          client.should_receive(:dispatch) do |request|
+            request.headers.should eq({
+              "Accept" => "text/html",
+              "Content-Type" => "application/x-www-form-urlencoded"
+            })
+          end
+          do_request
+        end
+
+        it "combines group-level headers with example-level ones" do
+          client.should_receive(:dispatch) do |request|
+            request.headers.should eq({
+              "Accept" => "text/html",
+              "Content-Type" => "application/x-www-form-urlencoded",
+              "Content-Length" => "100"
+            })
+          end
+          do_request :headers => { "Content-Length" => "100" }
+        end
+
+        context "two levels deep" do
+          header "Content-Type", "application/xml"
+          header "Content-Length", "100"
+
+          it "includes headers from outer contexts" do
+            client.should_receive(:dispatch) do |request|
+              request.headers.should eq({
+                "Accept" => "text/html",
+                "Content-Type" => "application/xml",
+                "Content-Length" => "100"
+              })
+            end
+            do_request
+          end
+        end
+      end
     end
   end
 end
