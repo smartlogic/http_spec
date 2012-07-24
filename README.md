@@ -1,3 +1,7 @@
+[![Travis status](https://secure.travis-ci.org/smartlogic/http_spec.png)](https://secure.travis-ci.org/smartlogic/http_spec)
+[![Gemnasium status](https://gemnasium.com/smartlogic/http_spec.png)](https://gemnasium.com/smartlogic/http_spec)
+[![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/smartlogic/http_spec)
+
 # HTTPSpec
 
 RSpec DSL for describing API behaviors
