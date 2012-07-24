@@ -12,15 +12,15 @@ task :coverage do
   Rake::Task[:spec].execute
 end
 
-task :default => :coverage
+Cane::RakeTask.new(:quality) do |cane|
+  cane.abc_max = 10
+  cane.style_measure = 80
+  cane.no_doc = true
+  cane.add_threshold 'coverage/covered_percent', :>=, 100
+end
 
 if RUBY_ENGINE == "ruby"
-  Cane::RakeTask.new(:quality) do |cane|
-    cane.abc_max = 10
-    cane.style_measure = 80
-    cane.no_doc = true
-    cane.add_threshold 'coverage/covered_percent', :>=, 100
-  end
-
-  task :default => :quality
+  task :default => [:coverage, :quality]
+else
+  task :default => :spec
 end
