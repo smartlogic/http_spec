@@ -1,0 +1,8 @@
+responseParameters:
+  properties:
+    foo:
+      type: string
+      required: true
+responseCodes:
+  - status: 200
+    successful: true

@@ -1,0 +1,5 @@
+requestParameters:
+  properties:
+    name:
+      type: string
+      required: true
