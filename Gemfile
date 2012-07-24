@@ -1,6 +1,7 @@
 source "https://rubygems.org"
 
 gem "rspec"
+gem "webmachine"
 
 group :test do
   gem "rack"
