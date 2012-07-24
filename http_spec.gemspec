@@ -15,6 +15,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "faraday"
   s.add_development_dependency "fdoc"
 
+  s.add_development_dependency "rake"
   s.add_development_dependency "simplecov"
   s.add_development_dependency "cane"
 end
