@@ -1,3 +1,9 @@
+PATH
+  remote: .
+  specs:
+    http_spec (0.0.1)
+      rspec
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -39,7 +45,7 @@ DEPENDENCIES
   cane
   faraday
   fdoc
+  http_spec!
   rack
-  rspec
   simplecov
   webmachine
