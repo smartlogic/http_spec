@@ -1,28 +1,8 @@
 require "spec_helper"
-require "http_spec/types"
-require "fdoc"
-
-module HTTPSpec
-  module Clients
-    class FdocProxy
-      def initialize(inner)
-        @inner = inner
-        @service = Fdoc::Service.new("spec/fixtures/fdoc")
-      end
-
-      def dispatch(request)
-        endpoint = @service.open(request.method, request.path)
-        endpoint.consume_request(request.body)
-        @inner.dispatch(request).tap do |response|
-          endpoint.consume_response(response.body, response.status)
-        end
-      end
-    end
-  end
-end
+require "http_spec/clients/fdoc_proxy"
 
 describe HTTPSpec::Clients::FdocProxy do
-  let(:client) { HTTPSpec::Clients::FdocProxy.new(inner) }
+  let(:client) { HTTPSpec::Clients::FdocProxy.new(inner, "spec/fixtures/fdoc") }
   let(:inner) { stub }
 
   it "proxies requests to an inner application" do
