@@ -93,7 +93,7 @@ describe "resource dsl" do
         header "Accept", "text/html"
         header "Content-Type", "application/x-www-form-urlencoded"
 
-        it "records declared headers in example metadata" do
+        it "dispatches the headers to the client" do
           client.should_receive(:dispatch) do |request|
             request.headers.should eq({
               "Accept" => "text/html",
