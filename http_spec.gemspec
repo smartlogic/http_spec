@@ -14,8 +14,12 @@ Gem::Specification.new do |s|
   s.add_development_dependency "webmachine"
   s.add_development_dependency "faraday"
   s.add_development_dependency "fdoc"
+  s.add_development_dependency "raddocs"
 
   s.add_development_dependency "rake"
   s.add_development_dependency "simplecov"
   s.add_development_dependency "cane"
+  s.add_development_dependency "capybara"
+  s.add_development_dependency "fakefs"
+  s.add_development_dependency "aruba"
 end

@@ -1,10 +1,15 @@
 require "rspec/core/rake_task"
+require "cucumber/rake/task"
 require "cane/rake_task"
 
 RSpec::Core::RakeTask.new(:spec) do |config|
   # Add command line option to ensure that SimpleCov will be loaded first.
   # Otherwise, the first spec file run will not be covered.
   config.ruby_opts = "-r ./spec/spec_helper"
+end
+
+Cucumber::Rake::Task.new(:cucumber) do |config|
+  config.cucumber_opts = %w{--format progress}
 end
 
 task :coverage do
@@ -20,7 +25,7 @@ Cane::RakeTask.new(:quality) do |cane|
 end
 
 if RUBY_ENGINE == "ruby"
-  task :default => [:coverage, :quality]
+  task :default => [:coverage, :quality, :cucumber]
 else
-  task :default => :spec
+  task :default => [:spec, :cucumber]
 end
