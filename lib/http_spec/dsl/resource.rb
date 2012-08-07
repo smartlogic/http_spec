@@ -10,10 +10,10 @@ module HTTPSpec
       module ClassMethods
         def self.define_actions(*methods)
           methods.each do |method|
-            define_method(method) do |route, &block|
+            define_method(method) do |route, metadata = {}, &block|
               description = "#{method.to_s.upcase} #{route}"
-              request = Request.new(method, route)
-              context(description, :request => request, &block)
+              metadata[:request] = Request.new(method, route)
+              context(description, metadata, &block)
             end
           end
         end

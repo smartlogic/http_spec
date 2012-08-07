@@ -16,12 +16,12 @@ Feature: Generate Documentation
       """
     And   a file named "app_spec.rb" with:
       """ruby
-      require "http_spec/dsl/methods"
+      require "http_spec/dsl/resource"
       require "http_spec/clients/raddocs_proxy"
       require "http_spec/clients/rack"
 
       describe "Greetings App", :parameters => [], :explanation => "" do
-        include HTTPSpec::DSL::Methods
+        include HTTPSpec::DSL::Resource
 
         let(:client) {
           HTTPSpec::Clients::RaddocsProxy.new(
@@ -30,19 +30,19 @@ Feature: Generate Documentation
           )
         }
 
-        context "Greetings", :resource_name => "Greetings" do
+        get "/greetings", :resource_name => "Greetings" do
           example "Being greeted" do
-            response = get "/greetings"
-            response.status.should eq(200)
-            response.body.should eq("Hello, World!")
+            do_request
+            status.should eq(200)
+            response_body.should eq("Hello, World!")
           end
         end
 
-        context "Farewells", :resource_name => "Farewells" do
+        get "/farewells", :resource_name => "Farewells" do
           example "Being bid farewell" do
-            response = get "/farewells"
-            response.status.should eq(200)
-            response.body.should eq("Goodbye, World!")
+            do_request
+            status.should eq(200)
+            response_body.should eq("Goodbye, World!")
           end
         end
       end
