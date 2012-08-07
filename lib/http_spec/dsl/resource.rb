@@ -41,11 +41,11 @@ module HTTPSpec
       end
 
       def do_request(options = {})
-        request = example.metadata[:request]
-        request.body = options[:body]
-        request.headers = default_headers(options[:headers])
+        request = example.metadata[:request].dup
+        request.body = options.delete(:body)
+        request.headers = default_headers(options.delete(:headers))
         request.parameters = example.metadata[:parameters]
-        build_path(request)
+        build_path(request, options)
         @last_response = client.dispatch(request)
       end
 
@@ -73,9 +73,11 @@ module HTTPSpec
 
       private
 
-      def build_path(request)
+      def build_path(request, options)
         request.path.gsub!(/:(\w+)/) do |match|
-          if respond_to?($1)
+          if options.key?($1.to_sym)
+            options[$1.to_sym]
+          elsif respond_to?($1)
             send($1)
           else
             match

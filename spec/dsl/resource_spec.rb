@@ -40,14 +40,28 @@ describe "resource dsl" do
         params.should eq({})
       end
 
-      context "when route parameters are defined" do
+      it "substitutes values in the route" do
+        client.should_receive(:dispatch) do |request|
+          request.path.should eq("/:foo/1")
+        end
+        do_request :id => 1
+      end
+
+      context "when route parameters are defined in the context" do
         let(:id) { 1 }
 
-        it "substitutes the param value in the route" do
+        it "substitutes the value in the route" do
           client.should_receive(:dispatch) do |request|
             request.path.should eq("/:foo/1")
           end
           do_request
+        end
+
+        it "prefers passed-in values for substitution" do
+          client.should_receive(:dispatch) do |request|
+            request.path.should eq("/:foo/2")
+          end
+          do_request :id => 2
         end
       end
 
