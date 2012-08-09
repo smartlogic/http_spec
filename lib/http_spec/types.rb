@@ -1,7 +1,7 @@
 module HTTPSpec
-  Request = Struct.new(:method, :path, :body, :headers, :parameters) do
+  Request = Struct.new(:method, :path, :body, :headers) do
     def dup
-      Request.new(method, path.dup, body, headers, parameters)
+      Request.new(method, path.dup, body, headers)
     end
   end
 

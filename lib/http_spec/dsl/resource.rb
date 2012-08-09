@@ -20,13 +20,6 @@ module HTTPSpec
 
         define_actions :get, :post, :put, :patch, :delete, :options, :head
 
-        def parameter(name, description, extra = {})
-          param = extra.merge(:name => name, :description => description)
-          copy_superclass_metadata(:parameters)
-          metadata[:parameters] ||= []
-          metadata[:parameters].push(param)
-        end
-
         def header(name, value)
           copy_superclass_metadata(:default_headers)
           metadata[:default_headers] ||= {}
@@ -45,19 +38,8 @@ module HTTPSpec
         request = example.metadata[:request].dup
         request.body = options.delete(:body)
         request.headers = default_headers(options.delete(:headers))
-        request.parameters = example.metadata[:parameters]
         build_path(request, options)
         @last_response = client.dispatch(request)
-      end
-
-      def params
-        return {} unless example.metadata[:parameters]
-        @params ||= {}
-        example.metadata[:parameters].each do |param|
-          name = param[:name]
-          @params[name] ||= send(name) if respond_to?(name)
-        end
-        @params
       end
 
       def status

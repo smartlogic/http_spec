@@ -32,12 +32,14 @@ Feature: Generate Documentation
       """ruby
       require "http_spec/dsl/resource"
       require "http_spec/dsl/methods"
+      require "http_spec/dsl/parameters"
       require "http_spec/clients/raddocs_proxy"
       require "http_spec/clients/rack"
 
       describe "Greetings App", :parameters => [], :explanation => "" do
         include HTTPSpec::DSL::Resource
         include HTTPSpec::DSL::Methods
+        include HTTPSpec::DSL::Parameters
 
         let(:client) {
           HTTPSpec::Clients::RaddocsProxy.new(

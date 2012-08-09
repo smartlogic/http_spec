@@ -36,10 +36,6 @@ describe "resource dsl" do
         response_status.should eq(200)
       end
 
-      it "has empty params by default" do
-        params.should eq({})
-      end
-
       it "substitutes values in the route" do
         client.should_receive(:dispatch) do |request|
           request.path.should eq("/:foo/1")
@@ -62,49 +58,6 @@ describe "resource dsl" do
             request.path.should eq("/:foo/2")
           end
           do_request :id => 2
-        end
-      end
-
-      context "when parameters are defined" do
-        parameter :name, "the name", :foo => :bar
-        parameter :owner, "the owner"
-
-        let(:name) { "test name" }
-
-        it "indexes the parameter values in params" do
-          params.should eq(:name => "test name")
-        end
-
-        it "lets examples mutate param values" do
-          params[:name] = "other name"
-          params[:name].should eq("other name")
-        end
-
-        it "sends declared parameters with the request" do
-          client.should_receive(:dispatch) do |request|
-            request.parameters.should eq([
-              { :name => :name, :description => "the name", :foo => :bar },
-              { :name => :owner, :description => "the owner" }
-            ])
-          end
-          do_request
-        end
-
-        context "two levels deep" do
-          parameter :cost, "the cost"
-          parameter :location, "the location"
-
-          it "includes parameters from outer contexts" do
-            client.should_receive(:dispatch) do |request|
-              request.parameters.should eq([
-                { :name => :name, :description => "the name", :foo => :bar },
-                { :name => :owner, :description => "the owner" },
-                { :name => :cost, :description => "the cost" },
-                { :name => :location, :description => "the location" }
-              ])
-            end
-            do_request
-          end
         end
       end
 
