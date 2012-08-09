@@ -3,8 +3,13 @@ When /^I load Raddocs$/ do
   @raddocs.visit "/"
 end
 
-Then /^the following (.*?) examples should be listed:$/ do |resource, table|
-  @raddocs.should have_content(resource)
+Then /^the following (.*?) examples should be listed:$/ do |resource_name, table|
+  resource = @raddocs.all(".resource").detect do |resource|
+    resource.find("h2").text == resource_name
+  end
+  actual = resource.all(".example").map { |example| example.text.strip }
+  expected = table.raw.map(&:first)
+  actual.should eq(expected)
 end
 
 When /^I view documentation for "(.*?)"$/ do |example|
