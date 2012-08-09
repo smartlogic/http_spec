@@ -36,7 +36,7 @@ Feature: Generate Documentation
       require "http_spec/clients/raddocs_proxy"
       require "http_spec/clients/rack"
 
-      describe "Greetings App", :parameters => [], :explanation => "" do
+      describe "Greetings App", :explanation => "" do
         include HTTPSpec::DSL::Resource
         include HTTPSpec::DSL::Methods
         include HTTPSpec::DSL::Parameters

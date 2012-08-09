@@ -5,6 +5,7 @@ module HTTPSpec
     module Resource
       def self.included(base)
         base.extend(ClassMethods)
+        base.metadata[:default_headers] = {}
       end
 
       module ClassMethods
@@ -22,7 +23,6 @@ module HTTPSpec
 
         def header(name, value)
           copy_superclass_metadata(:default_headers)
-          metadata[:default_headers] ||= {}
           metadata[:default_headers][name] = value
         end
 

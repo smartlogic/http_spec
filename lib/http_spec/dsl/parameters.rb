@@ -3,13 +3,13 @@ module HTTPSpec
     module Parameters
       def self.included(base)
         base.extend(ClassMethods)
+        base.metadata[:parameters] = []
       end
 
       module ClassMethods
         def parameter(name, description, extra = {})
           param = extra.merge(:name => name, :description => description)
           copy_superclass_metadata(:parameters)
-          metadata[:parameters] ||= []
           metadata[:parameters].push(param)
         end
 
