@@ -16,6 +16,16 @@ When /^I view documentation for "(.*?)"$/ do |example|
   @raddocs.click_link example
 end
 
+Then /^the parameters should be:$/ do |table|
+  actual = @raddocs.find(".parameters").all(".parameter").map do |parameter|
+    name = parameter.find(".name").text
+    description = parameter.find(".description").text
+    [name, description]
+  end
+  expected = table.raw
+  actual.should eq(expected)
+end
+
 Then /^the request route should be "(.*?)"$/ do |route|
   @raddocs.should have_css(".request .route .route", :text => route)
 end
