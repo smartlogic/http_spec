@@ -66,8 +66,8 @@ describe "resource dsl" do
       end
 
       context "when parameters are defined" do
-        parameter :name, "name description", :foo => :bar
-        parameter :owner, "owner description"
+        parameter :name, "the name", :foo => :bar
+        parameter :owner, "the owner"
 
         let(:name) { "test name" }
 
@@ -82,26 +82,26 @@ describe "resource dsl" do
 
         it "sends declared parameters with the request" do
           client.should_receive(:dispatch) do |request|
-            request.parameters.should eq({
-              :name => { :description => "name description", :foo => :bar },
-              :owner => { :description => "owner description" }
-            })
+            request.parameters.should eq([
+              { :name => :name, :description => "the name", :foo => :bar },
+              { :name => :owner, :description => "the owner" }
+            ])
           end
           do_request
         end
 
         context "two levels deep" do
-          parameter :cost, "cost description"
-          parameter :location, "location description"
+          parameter :cost, "the cost"
+          parameter :location, "the location"
 
           it "includes parameters from outer contexts" do
             client.should_receive(:dispatch) do |request|
-              request.parameters.should eq({
-                :name => { :description => "name description", :foo => :bar },
-                :owner => { :description => "owner description" },
-                :cost => { :description => "cost description" },
-                :location => { :description => "location description" }
-              })
+              request.parameters.should eq([
+                { :name => :name, :description => "the name", :foo => :bar },
+                { :name => :owner, :description => "the owner" },
+                { :name => :cost, :description => "the cost" },
+                { :name => :location, :description => "the location" }
+              ])
             end
             do_request
           end

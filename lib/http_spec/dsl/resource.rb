@@ -21,9 +21,10 @@ module HTTPSpec
         define_actions :get, :post, :put, :patch, :delete, :options, :head
 
         def parameter(name, description, extra = {})
+          param = extra.merge(:name => name, :description => description)
           copy_superclass_metadata(:parameters)
-          metadata[:parameters] ||= {}
-          metadata[:parameters][name] = extra.merge(:description => description)
+          metadata[:parameters] ||= []
+          metadata[:parameters].push(param)
         end
 
         def header(name, value)
@@ -52,7 +53,8 @@ module HTTPSpec
       def params
         return {} unless example.metadata[:parameters]
         @params ||= {}
-        example.metadata[:parameters].each_key do |name|
+        example.metadata[:parameters].each do |param|
+          name = param[:name]
           @params[name] ||= send(name) if respond_to?(name)
         end
         @params
