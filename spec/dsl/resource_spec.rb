@@ -66,36 +66,41 @@ describe "resource dsl" do
       end
 
       context "when parameters are defined" do
-        parameter "name", "name description", :foo => :bar
-        parameter "owner", "owner description"
+        parameter :name, "name description", :foo => :bar
+        parameter :owner, "owner description"
 
         let(:name) { "test name" }
 
         it "indexes the parameter values in params" do
-          params.should eq("name" => "test name")
+          params.should eq(:name => "test name")
+        end
+
+        it "lets examples mutate param values" do
+          params[:name] = "other name"
+          params[:name].should eq("other name")
         end
 
         it "sends declared parameters with the request" do
           client.should_receive(:dispatch) do |request|
             request.parameters.should eq({
-              "name" => { :description => "name description", :foo => :bar },
-              "owner" => { :description => "owner description" }
+              :name => { :description => "name description", :foo => :bar },
+              :owner => { :description => "owner description" }
             })
           end
           do_request
         end
 
         context "two levels deep" do
-          parameter "cost", "cost description"
-          parameter "location", "location description"
+          parameter :cost, "cost description"
+          parameter :location, "location description"
 
           it "includes parameters from outer contexts" do
             client.should_receive(:dispatch) do |request|
               request.parameters.should eq({
-                "name" => { :description => "name description", :foo => :bar },
-                "owner" => { :description => "owner description" },
-                "cost" => { :description => "cost description" },
-                "location" => { :description => "location description" }
+                :name => { :description => "name description", :foo => :bar },
+                :owner => { :description => "owner description" },
+                :cost => { :description => "cost description" },
+                :location => { :description => "location description" }
               })
             end
             do_request

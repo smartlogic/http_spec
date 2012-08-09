@@ -51,11 +51,11 @@ module HTTPSpec
 
       def params
         return {} unless example.metadata[:parameters]
-        params = {}
+        @params ||= {}
         example.metadata[:parameters].each_key do |name|
-          params[name] = send(name) if respond_to?(name)
+          @params[name] ||= send(name) if respond_to?(name)
         end
-        params
+        @params
       end
 
       def status
