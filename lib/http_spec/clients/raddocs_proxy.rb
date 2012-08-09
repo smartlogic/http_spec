@@ -79,8 +79,12 @@ module HTTPSpec
             resource = { "name" => resource_name, "examples" => [] }
             resources.push(resource)
           end
-          example = { "description" => description, "link" => link }
-          resource["examples"].push(example)
+          examples = resource.fetch("examples")
+          example = examples.find { |e| e["description"] == description }
+          unless example
+            example = { "description" => description, "link" => link }
+            examples.push(example)
+          end
         end
       end
 

@@ -31,9 +31,10 @@ describe HTTPSpec::Clients::RaddocsProxy do
     c = HTTPSpec::Clients::RaddocsProxy.new(inner,
                                             :resource_name => "baz",
                                             :description => "quux")
-    a.dispatch(request)
-    b.dispatch(request)
-    c.dispatch(request)
+    a.dispatch(request) # indexes examples
+    a.dispatch(request) # doesn't index same example twice
+    b.dispatch(request) # indexes > 1 example for a resource
+    c.dispatch(request) # indexes > 1 resource
     File.open("docs/index.json", "r") do |file|
       index = JSON.load(file)
       index.should eq(
