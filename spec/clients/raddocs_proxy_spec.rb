@@ -1,15 +1,14 @@
 require "spec_helper"
 require "http_spec/clients/raddocs_proxy"
-require "fakefs/spec_helpers"
 
 describe HTTPSpec::Clients::RaddocsProxy do
-  include FakeFS::SpecHelpers
-
   let(:inner) { FakeClient.new }
   let(:request) { HTTPSpec::Request.new(:get, "/path", "request body") }
 
   before do
-    FileUtils.mkdir("docs")
+    FileUtils.rm_rf("tmp/docs")
+    FileUtils.mkdir_p("tmp/docs")
+    Raddocs.configuration.docs_dir = "tmp/docs"
   end
 
   it "proxies requests to an inner client" do
@@ -35,7 +34,7 @@ describe HTTPSpec::Clients::RaddocsProxy do
     a.dispatch(request) # doesn't index same example twice
     b.dispatch(request) # indexes > 1 example for a resource
     c.dispatch(request) # indexes > 1 resource
-    File.open("docs/index.json", "r") do |file|
+    File.open("tmp/docs/index.json", "r") do |file|
       index = JSON.load(file)
       index.should eq(
         "resources" => [
@@ -63,7 +62,7 @@ describe HTTPSpec::Clients::RaddocsProxy do
     baz = HTTPSpec::Request.new(:post, "/baz", "quux")
     client.dispatch(foo)
     client.dispatch(baz)
-    File.open("docs/foo/bar.json", "r") do |file|
+    File.open("tmp/docs/foo/bar.json", "r") do |file|
       index = JSON.load(file)
       index.should eq(
         "resource" => "foo",
