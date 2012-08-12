@@ -11,14 +11,10 @@ module HTTPSpec
       def dispatch(request)
         opts = headers_to_env(request.headers)
         opts[:input] = request.body
-        from_rack @session.request(request.method, request.path, opts)
+        @session.request(request.method, request.path, opts)
       end
 
       private
-
-      def from_rack(response)
-        Response.new(response.status, response.body, response.headers)
-      end
 
       def headers_to_env(headers)
         return {} unless headers
