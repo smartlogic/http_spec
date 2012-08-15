@@ -41,12 +41,12 @@ Feature: Generate Documentation
         include HTTPSpec::DSL::Methods
         include HTTPSpec::DSL::Parameters
 
-        let(:client) {
-          HTTPSpec::Clients::RaddocsProxy.new(
+        before do
+          HTTPSpec.client = HTTPSpec::Clients::RaddocsProxy.new(
             HTTPSpec::Clients::Rack.new(App.new),
             example.metadata
           )
-        }
+        end
 
         get "/greetings", :resource_name => "Greetings" do
           example "Being greeted" do

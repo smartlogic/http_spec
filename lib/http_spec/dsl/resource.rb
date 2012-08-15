@@ -1,3 +1,4 @@
+require "http_spec"
 require "http_spec/types"
 
 module HTTPSpec
@@ -39,7 +40,7 @@ module HTTPSpec
         request.body = options.delete(:body)
         request.headers = default_headers(options.delete(:headers))
         build_path(request, options)
-        @last_response = client.dispatch(request)
+        @last_response = HTTPSpec.client.dispatch(request)
       end
 
       def status

@@ -1,3 +1,4 @@
+require "http_spec"
 require "http_spec/types"
 
 module HTTPSpec
@@ -7,7 +8,7 @@ module HTTPSpec
         methods.each do |method|
           define_method(method) do |path, body=nil, headers=nil|
             request = Request.new(method, path, body, headers)
-            client.dispatch(request)
+            HTTPSpec.client.dispatch(request)
           end
         end
       end

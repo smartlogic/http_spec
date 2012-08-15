@@ -6,6 +6,10 @@ describe "resource dsl" do
 
   let(:client) { FakeClient.new }
 
+  before do
+    HTTPSpec.client = client
+  end
+
   [:get, :post, :put, :patch, :delete, :options, :head].each do |method|
     send(method, "/:foo/:id") do
       let(:http_method) { method.to_s.upcase }

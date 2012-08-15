@@ -4,7 +4,9 @@ require "http_spec/dsl/methods"
 describe "methods dsl" do
   include HTTPSpec::DSL::Methods
 
-  let(:client) { FakeClient.new }
+  before do
+    HTTPSpec.client = FakeClient.new
+  end
 
   it "delegates simple requests to a client" do
     [:get, :post, :put, :patch, :delete, :options, :head].each do |method|
