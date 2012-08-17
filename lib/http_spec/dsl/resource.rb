@@ -40,7 +40,7 @@ module HTTPSpec
         request.body = options.delete(:body)
         request.headers = default_headers(options.delete(:headers))
         build_path(request, options)
-        @last_response = HTTPSpec.client.dispatch(request)
+        @last_response = HTTPSpec.dispatch(request)
       end
 
       def status

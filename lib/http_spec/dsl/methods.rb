@@ -8,7 +8,7 @@ module HTTPSpec
         methods.each do |method|
           define_method(method) do |path, body=nil, headers=nil|
             request = Request.new(method, path, body, headers)
-            HTTPSpec.client.dispatch(request)
+            HTTPSpec.dispatch(request)
           end
         end
       end
