@@ -7,8 +7,9 @@ describe HTTPSpec::Clients::VCRProxy do
 
   it "proxies requests to an inner client" do
     request = HTTPSpec::Request.new
-    inner.should_receive(:dispatch).with(request)
-    client.dispatch(request)
+    response = HTTPSpec::Response.new
+    inner.stub(:dispatch).with(request).and_return(response)
+    client.dispatch(request).should eq(response)
   end
 
   it "returns a recorded response on duplicate requests" do
