@@ -12,11 +12,11 @@ RSpec DSL for describing API behaviors
 require "http_spec/dsl/resource"
 require "http_spec/clients/rack"
 
+app = lambda { |env| [200, { "Foo" => "Bar" }, ["Hello, World!"]] }
+HTTPSpec.client = HTTPSpec::Clients::Rack.new(app)
+
 describe "My Awesome App" do
   include HTTPSpec::DSL::Resource
-
-  let(:client) { HTTPSpec::Clients::Rack.new(app) }
-  let(:app) { lambda { |env| [200, { "Foo" => "Bar" }, ["Hello, World!"]] } }
 
   get "/foobar" do
     it "should be successful" do
