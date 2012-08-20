@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    http_spec (0.0.2)
+    http_spec (0.1.0)
       rspec
 
 GEM
