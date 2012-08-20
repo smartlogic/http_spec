@@ -39,4 +39,10 @@ describe HTTPSpec::Clients::Faraday do
     response = client.dispatch(request)
     response.headers["Query"].should eq("string")
   end
+
+  it "returns a serializable response" do
+    request = HTTPSpec::Request.new(:get, "/path")
+    response = client.dispatch(request)
+    Marshal.load(Marshal.dump(response)).should eq(response)
+  end
 end

@@ -37,7 +37,7 @@ describe HTTPSpec::Clients::Rack do
       "Foo" => "Bar"
     }
     request = HTTPSpec::Request.new(:get, "/path", nil, headers)
-    response = client.dispatch(request)
+    client.dispatch(request)
     @env["CONTENT_TYPE"].should eq("x-foo-bar")
     @env["CONTENT_LENGTH"].should eq("10")
     @env["HTTP_FOO"].should eq("Bar")
@@ -49,5 +49,11 @@ describe HTTPSpec::Clients::Rack do
     response.status.should eq(200)
     response.headers["Foo"].should eq("Bar")
     response.body.should eq("hello")
+  end
+
+  it "returns a serializable response" do
+    request = HTTPSpec::Request.new(:get, "/path")
+    response = client.dispatch(request)
+    Marshal.load(Marshal.dump(response)).should eq(response)
   end
 end

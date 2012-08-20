@@ -9,10 +9,17 @@ module HTTPSpec
       end
 
       def dispatch(request)
-        @conn.send(request.method, request.path) do |req|
+        response = @conn.send(request.method, request.path) do |req|
           req.headers = request.headers || {}
           req.body = request.body
         end
+        from_faraday response
+      end
+
+      private
+
+      def from_faraday(response)
+        HTTPSpec::Response.new(response.status, response.body, response.headers)
       end
     end
   end

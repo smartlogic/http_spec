@@ -50,4 +50,10 @@ describe HTTPSpec::Clients::Webmachine do
     response = client.dispatch(request)
     response.headers["Query"].should eq("query=string")
   end
+
+  it "returns a serializable response" do
+    request = HTTPSpec::Request.new(:get, "/path")
+    response = client.dispatch(request)
+    Marshal.load(Marshal.dump(response)).should eq(response)
+  end
 end
