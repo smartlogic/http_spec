@@ -3,7 +3,13 @@ require "http_spec/clients/vcr_proxy"
 
 describe HTTPSpec::Clients::VCRProxy do
   let(:inner) { stub }
-  let(:client) { HTTPSpec::Clients::VCRProxy.new(inner) }
+  let(:client) { HTTPSpec::Clients::VCRProxy.new(inner, "cassette", dir) }
+  let(:dir) { "tmp/recordings" }
+
+  before do
+    FileUtils.rm_rf(dir)
+    FileUtils.mkdir_p(dir)
+  end
 
   it "proxies requests to an inner client" do
     request = HTTPSpec::Request.new
@@ -31,5 +37,18 @@ describe HTTPSpec::Clients::VCRProxy do
     client.dispatch(HTTPSpec::Request.new(:get))
     client.dispatch(HTTPSpec::Request.new(:post))
     called.should eq(2)
+  end
+
+  it "persists the responses" do
+    request = HTTPSpec::Request.new
+    one = HTTPSpec::Clients::VCRProxy.new(inner, "cassette", dir)
+    two = HTTPSpec::Clients::VCRProxy.new(inner, "cassette", dir)
+    called = 0
+    inner.stub(:dispatch) do
+      called += 1
+    end
+    one.dispatch(request)
+    two.dispatch(request)
+    called.should eq(1)
   end
 end
