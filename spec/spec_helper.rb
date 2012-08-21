@@ -14,3 +14,9 @@ if ENV["COVERAGE"]
 end
 
 Dir[File.expand_path("../support/**/*.rb", __FILE__)].each &method(:require)
+
+def mock_client(&block)
+  client = stub
+  client.stub(:dispatch, &block)
+  client
+end

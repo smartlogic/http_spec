@@ -2,12 +2,27 @@ Feature: Record Responses
   Background:
     Given a file named "app.rb" with:
       """ruby
-      App = lambda do |env|
-        sleep 1
-        [200, {}, "Hello, World!"]
+      class App
+        def initialize
+          @count = 0
+        end
+
+        def call(env)
+          case env["PATH_INFO"]
+          when "/wait"
+            sleep 1
+            [200, {}, "Hello, World!"]
+          when "/count"
+            @count += 1
+            [200, {}, [@count]]
+          end
+        end
       end
       """
-    And   a file named "app_spec.rb" with:
+    And   a directory named "recordings"
+
+  Scenario: Recorded responses are very fast
+    Given a file named "app_spec.rb" with:
       """ruby
       require "http_spec/dsl/methods"
       require "http_spec/clients/vcr_proxy"
@@ -18,21 +33,45 @@ Feature: Record Responses
 
         before do
           HTTPSpec.client = HTTPSpec::Clients::VCRProxy.new(
-            HTTPSpec::Clients::Rack.new(App),
+            HTTPSpec::Clients::Rack.new(App.new),
             example.full_description
           )
         end
 
         it "says hello" do
-          response = get "/"
+          response = get "/wait"
           response.body.should eq("Hello, World!")
         end
       end
       """
-    And   a directory named "recordings"
-
-  Scenario: Recorded responses are very fast
     When  I successfully run `rspec app_spec.rb --require ./app.rb`
     And   I successfully run `rspec app_spec.rb --require ./app.rb`
     Then  the first run should take about 1 second
     And   the second run should be much faster
+
+  Scenario: Requests are recorded in the correct order
+    Given a file named "app_spec.rb" with:
+      """ruby
+      require "http_spec/dsl/methods"
+      require "http_spec/clients/vcr_proxy"
+      require "http_spec/clients/rack"
+
+      describe "Counting App" do
+        include HTTPSpec::DSL::Methods
+
+        before do
+          HTTPSpec.client = HTTPSpec::Clients::VCRProxy.new(
+            HTTPSpec::Clients::Rack.new(App.new),
+            example.full_description
+          )
+        end
+
+        it "maintains a count" do
+          get("/count").body.should eq("1")
+          get("/count").body.should eq("2")
+        end
+      end
+      """
+    When  I successfully run `rspec app_spec.rb --require ./app.rb`
+    And   I run `rspec app_spec.rb --require ./app.rb`
+    Then  the exit status should be 0

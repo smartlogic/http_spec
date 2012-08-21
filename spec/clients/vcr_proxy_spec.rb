@@ -2,8 +2,19 @@ require "spec_helper"
 require "http_spec/clients/vcr_proxy"
 
 describe HTTPSpec::Clients::VCRProxy do
-  let(:inner) { stub }
   let(:client) { HTTPSpec::Clients::VCRProxy.new(inner, "cassette", dir) }
+  let(:inner) do
+    mock_client do |request|
+      case request.path
+      when hello.path then greeting
+      when goodbye.path then farewell
+      end
+    end
+  end
+  let(:hello) { HTTPSpec::Request.new(:get, "/greetings") }
+  let(:goodbye) { HTTPSpec::Request.new(:get, "/farewells") }
+  let(:greeting) { HTTPSpec::Response.new(200, "Hello, World") }
+  let(:farewell) { HTTPSpec::Response.new(200, "Goodbye, World") }
   let(:dir) { "tmp/recordings" }
 
   before do
@@ -12,43 +23,25 @@ describe HTTPSpec::Clients::VCRProxy do
   end
 
   it "proxies requests to an inner client" do
-    request = HTTPSpec::Request.new
-    response = HTTPSpec::Response.new
-    inner.stub(:dispatch).with(request).and_return(response)
-    client.dispatch(request).should eq(response)
+    client.dispatch(hello).should eq(greeting)
   end
 
-  it "returns a recorded response on duplicate requests" do
-    request = HTTPSpec::Request.new
-    called = 0
-    inner.stub(:dispatch) do
-      called += 1
-    end
-    client.dispatch(request)
-    client.dispatch(request)
-    called.should eq(1)
-  end
-
-  it "proxies to the inner client for new requests" do
-    called = 0
-    inner.stub(:dispatch) do
-      called += 1
-    end
-    client.dispatch(HTTPSpec::Request.new(:get))
-    client.dispatch(HTTPSpec::Request.new(:post))
-    called.should eq(2)
-  end
-
-  it "persists the responses" do
-    request = HTTPSpec::Request.new
+  it "returns a recorded response when replayed" do
     one = HTTPSpec::Clients::VCRProxy.new(inner, "cassette", dir)
     two = HTTPSpec::Clients::VCRProxy.new(inner, "cassette", dir)
-    called = 0
-    inner.stub(:dispatch) do
-      called += 1
-    end
-    one.dispatch(request)
-    two.dispatch(request)
-    called.should eq(1)
+    one.dispatch(hello)
+    one.dispatch(goodbye)
+    inner.should_not_receive(:dispatch)
+    two.dispatch(hello).should eq(greeting)
+    two.dispatch(goodbye).should eq(farewell)
+  end
+
+  it "errors when the replayed requests do not match the recording" do
+    one = HTTPSpec::Clients::VCRProxy.new(inner, "cassette", dir)
+    two = HTTPSpec::Clients::VCRProxy.new(inner, "cassette", dir)
+    one.dispatch(hello)
+    expect {
+      two.dispatch(goodbye)
+    }.to raise_error("Request does not match recording.")
   end
 end

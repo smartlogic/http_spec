@@ -10,7 +10,13 @@ module HTTPSpec
       end
 
       def dispatch(request)
-        @recording[request] ||= @inner.dispatch(request)
+        if @recording.new?
+          response = @inner.dispatch(request)
+          @recording.record(request, response)
+          response
+        else
+          @recording.play(request)
+        end
       end
 
       class Recording
@@ -19,14 +25,23 @@ module HTTPSpec
           @filepath = File.join(dir, filename)
         end
 
-        def [](request)
-          cache[request]
+        def new?
+          @new ||= !File.exists?(@filepath)
         end
 
-        def []=(request, response)
-          cache[request] = response
+        def record(request, response)
+          cache << [request, response]
           File.open(@filepath, "w+") do |file|
             Marshal.dump(@cache, file)
+          end
+        end
+
+        def play(request)
+          next_request, next_response = cache.shift
+          if next_request == request
+            next_response
+          else
+            raise "Request does not match recording."
           end
         end
 
@@ -37,7 +52,7 @@ module HTTPSpec
                 Marshal.load(file)
               end
             else
-              {}
+              []
             end
         end
       end
