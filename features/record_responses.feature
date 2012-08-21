@@ -3,7 +3,7 @@ Feature: Record Responses
     Given a file named "app.rb" with:
       """ruby
       App = lambda do |env|
-        sleep 0.1
+        sleep 1
         [200, {}, "Hello, World!"]
       end
       """
@@ -34,5 +34,5 @@ Feature: Record Responses
   Scenario: Recorded responses are very fast
     When  I successfully run `rspec app_spec.rb --require ./app.rb`
     And   I successfully run `rspec app_spec.rb --require ./app.rb`
-    Then  the first run should take about 0.1 seconds
+    Then  the first run should take about 1 second
     And   the second run should be much faster
