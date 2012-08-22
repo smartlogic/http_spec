@@ -9,6 +9,7 @@ Gem::Specification.new do |s|
   s.require_path = "lib"
 
   s.add_runtime_dependency "rspec"
+  s.add_runtime_dependency "values"
 
   s.add_development_dependency "rack"
   s.add_development_dependency "webmachine"

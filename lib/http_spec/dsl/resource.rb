@@ -14,7 +14,7 @@ module HTTPSpec
           methods.each do |method|
             define_method(method) do |route, metadata = {}, &block|
               description = "#{method.to_s.upcase} #{route}"
-              metadata[:request] = Request.new(method, route)
+              metadata[:request] = Request.new(method, route, "", {})
               context(description, metadata, &block)
             end
           end
@@ -36,11 +36,7 @@ module HTTPSpec
       end
 
       def do_request(options = {})
-        request = example.metadata[:request].dup
-        request.body = options.delete(:body)
-        request.headers = default_headers(options.delete(:headers))
-        build_path(request, options)
-        @last_response = HTTPSpec.dispatch(request)
+        @last_response = HTTPSpec.dispatch(build_request(options))
       end
 
       def status
@@ -58,8 +54,16 @@ module HTTPSpec
 
       private
 
-      def build_path(request, options)
-        request.path.gsub!(/:(\w+)/) do |match|
+      def build_request(options)
+        request = example.metadata[:request]
+        path = build_path(request.path, options)
+        body = options.delete(:body)
+        headers = default_headers(options.delete(:headers))
+        Request.new(request.method, path, body, headers)
+      end
+
+      def build_path(path, options)
+        path.gsub(/:(\w+)/) do |match|
           if options.key?($1.to_sym)
             options[$1.to_sym]
           elsif respond_to?($1)

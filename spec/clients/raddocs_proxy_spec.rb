@@ -3,7 +3,7 @@ require "http_spec/clients/raddocs_proxy"
 
 describe HTTPSpec::Clients::RaddocsProxy do
   let(:inner) { FakeClient.new }
-  let(:request) { HTTPSpec::Request.new(:get, "/path", "request body") }
+  let(:request) { HTTPSpec::Request.new(:get, "/path", "request body", {}) }
 
   before do
     FileUtils.rm_rf("tmp/docs")
@@ -15,7 +15,7 @@ describe HTTPSpec::Clients::RaddocsProxy do
     client = HTTPSpec::Clients::RaddocsProxy.new(inner,
                                                  :resource_name => "foo",
                                                  :description => "bar")
-    response = HTTPSpec::Response.new
+    response = HTTPSpec::Response.new(200, "", {})
     inner.should_receive(:dispatch).with(request).and_return(response)
     client.dispatch(request)
   end
@@ -59,7 +59,7 @@ describe HTTPSpec::Clients::RaddocsProxy do
                                                  :resource_name => "foo",
                                                  :description => "bar")
     foo = HTTPSpec::Request.new(:get, "/foo", "bar", "foo" => "bar")
-    baz = HTTPSpec::Request.new(:post, "/baz", "quux")
+    baz = HTTPSpec::Request.new(:post, "/baz", "quux", {})
     client.dispatch(foo)
     client.dispatch(baz)
     File.open("tmp/docs/foo/bar.json", "r") do |file|

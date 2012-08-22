@@ -11,10 +11,10 @@ describe HTTPSpec::Clients::VCRProxy do
       end
     end
   end
-  let(:hello) { HTTPSpec::Request.new(:get, "/greetings") }
-  let(:goodbye) { HTTPSpec::Request.new(:get, "/farewells") }
-  let(:greeting) { HTTPSpec::Response.new(200, "Hello, World") }
-  let(:farewell) { HTTPSpec::Response.new(200, "Goodbye, World") }
+  let(:hello) { HTTPSpec::Request.new(:get, "/greetings", "", {}) }
+  let(:goodbye) { HTTPSpec::Request.new(:get, "/farewells", "", {}) }
+  let(:greeting) { HTTPSpec::Response.new(200, "Hello, World", {}) }
+  let(:farewell) { HTTPSpec::Response.new(200, "Goodbye, World", {}) }
   let(:dir) { "tmp/recordings" }
 
   before do

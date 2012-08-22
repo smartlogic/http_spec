@@ -12,20 +12,20 @@ describe HTTPSpec::Clients::Rack do
   let(:client) { HTTPSpec::Clients::Rack.new(app) }
 
   it "issues requests to the app" do
-    request = HTTPSpec::Request.new(:get, "/path")
+    request = HTTPSpec::Request.new(:get, "/path", "", {})
     client.dispatch(request)
     @env["REQUEST_METHOD"].should eq("GET")
     @env["PATH_INFO"].should eq("/path")
   end
 
   it "accepts query parameters as part of the path" do
-    request = HTTPSpec::Request.new(:get, "/path?query=string")
+    request = HTTPSpec::Request.new(:get, "/path?query=string", "", {})
     client.dispatch(request)
     @env["QUERY_STRING"].should eq("query=string")
   end
 
   it "sends the response body as input" do
-    request = HTTPSpec::Request.new(:post, "/path", "foobarbaz")
+    request = HTTPSpec::Request.new(:post, "/path", "foobarbaz", {})
     client.dispatch(request)
     @env["rack.input"].read.should eq("foobarbaz")
   end
@@ -36,7 +36,7 @@ describe HTTPSpec::Clients::Rack do
       "Content-Length" => "10",
       "Foo" => "Bar"
     }
-    request = HTTPSpec::Request.new(:get, "/path", nil, headers)
+    request = HTTPSpec::Request.new(:get, "/path", "", headers)
     client.dispatch(request)
     @env["CONTENT_TYPE"].should eq("x-foo-bar")
     @env["CONTENT_LENGTH"].should eq("10")
@@ -44,7 +44,7 @@ describe HTTPSpec::Clients::Rack do
   end
 
   it "returns the response" do
-    request = HTTPSpec::Request.new(:get, "/path")
+    request = HTTPSpec::Request.new(:get, "/path", "", {})
     response = client.dispatch(request)
     response.status.should eq(200)
     response.headers["Foo"].should eq("Bar")
@@ -52,7 +52,7 @@ describe HTTPSpec::Clients::Rack do
   end
 
   it "returns a serializable response" do
-    request = HTTPSpec::Request.new(:get, "/path")
+    request = HTTPSpec::Request.new(:get, "/path", "", {})
     response = client.dispatch(request)
     Marshal.load(Marshal.dump(response)).should eq(response)
   end
