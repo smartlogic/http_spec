@@ -3,7 +3,7 @@ require "capybara"
 require "raddocs"
 
 Before do
-  @aruba_timeout_seconds = 5
+  @aruba_timeout_seconds = 10
 end
 
 Raddocs.configure do |config|
