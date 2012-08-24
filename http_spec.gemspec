@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.files = Dir["lib/**/*"]
   s.require_path = "lib"
 
-  s.add_runtime_dependency "rspec"
+  s.add_runtime_dependency "rspec-core"
   s.add_runtime_dependency "values"
 
   s.add_development_dependency "rack"
@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "fdoc"
   s.add_development_dependency "raddocs"
 
+  s.add_development_dependency "rspec"
   s.add_development_dependency "rake"
   s.add_development_dependency "simplecov"
   s.add_development_dependency "cane"

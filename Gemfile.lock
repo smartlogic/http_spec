@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     http_spec (0.1.0)
-      rspec
+      rspec-core
       values
 
 GEM
@@ -110,5 +110,6 @@ DEPENDENCIES
   rack
   raddocs
   rake
+  rspec
   simplecov
   webmachine
