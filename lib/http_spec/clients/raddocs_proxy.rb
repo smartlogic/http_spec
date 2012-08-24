@@ -122,7 +122,7 @@ module HTTPSpec
 
         def add_request(request, response)
           requests.push(
-            "request_headers" => request.headers || {},
+            "request_headers" => request.headers,
             "request_method" => request.method.upcase,
             "request_path" => request.path,
             "request_body" => request.body,

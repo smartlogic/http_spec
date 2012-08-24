@@ -20,7 +20,7 @@ module HTTPSpec
         ::Webmachine::Request.new(
           request.method.to_s.upcase,
           URI.parse(request.path),
-          request.headers || {},
+          request.headers,
           request.body
         )
       end

@@ -21,7 +21,6 @@ module HTTPSpec
       end
 
       def headers_to_env(headers)
-        return {} unless headers
         headers.inject({}) do |env, (k, v)|
           k = k.tr("-", "_").upcase
           k = "HTTP_#{k}" unless %w{CONTENT_TYPE CONTENT_LENGTH}.include?(k)

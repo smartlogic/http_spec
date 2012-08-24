@@ -10,7 +10,7 @@ module HTTPSpec
 
       def dispatch(request)
         response = @conn.send(request.method, request.path) do |req|
-          req.headers = request.headers || {}
+          req.headers = request.headers
           req.body = request.body
         end
         from_faraday response
