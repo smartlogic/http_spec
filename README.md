@@ -4,7 +4,7 @@
 
 # HTTPSpec
 
-RSpec DSL for describing API behaviors
+RSpec DSLs for describing API behaviors
 
 ## Example Usage
 
@@ -33,6 +33,32 @@ describe "My Awesome App" do
       do_request
       response_body.should eq("Hello, World!")
     end
+  end
+end
+```
+
+Want something more light-weight?
+
+```ruby
+require "http_spec/dsl/methods"
+require "http_spec/clients/rack"
+
+app = lambda { |env| [200, { "Foo" => "Bar" }, ["Hello, World!"]] }
+HTTPSpec.client = HTTPSpec::Clients::Rack.new(app)
+
+describe "My Awesome App" do
+  include HTTPSpec::DSL::Methods
+
+  it "should be successful" do
+    get("/foo").status.should eq(200)
+  end
+
+  it "should tell us about foo" do
+    get("/bar").headers["Foo"].should eq("Bar")
+  end
+
+  it "should greet us" do
+    get("/baz").body.should eq("Hello, World!")
   end
 end
 ```
