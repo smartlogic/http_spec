@@ -56,14 +56,15 @@ module HTTPSpec
 
       def build_request(options)
         request = example.metadata[:request]
-        path = build_path(request.path, options)
-        body = options.delete(:body)
-        headers = default_headers(options.delete(:headers))
+        path = build_path(request, options)
+        body = options.fetch(:body, "")
+        headers = example.metadata[:default_headers]
+        headers.merge!(options.fetch(:headers, {}))
         Request.new(request.method, path, body, headers)
       end
 
-      def build_path(path, options)
-        path.gsub(/:(\w+)/) do |match|
+      def build_path(request, options)
+        request.path.gsub(/:(\w+)/) do |match|
           if options.key?($1.to_sym)
             options[$1.to_sym]
           elsif respond_to?($1)
@@ -72,13 +73,6 @@ module HTTPSpec
             match
           end
         end
-      end
-
-      def default_headers(headers)
-        default_headers = example.metadata[:default_headers]
-        return default_headers if headers.nil?
-        return headers if default_headers.nil?
-        default_headers.merge(headers)
       end
     end
   end
