@@ -125,6 +125,7 @@ module HTTPSpec
             "request_headers" => request.headers,
             "request_method" => request.method.upcase,
             "request_path" => request.path,
+            "request_query_parameters" => {},
             "request_body" => request.body,
             "response_status" => response.status,
             "response_headers" => response.headers,
