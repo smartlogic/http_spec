@@ -15,7 +15,8 @@ GEM
       ffi (>= 1.0.11)
       rspec (>= 2.7.0)
     builder (3.0.0)
-    cane (2.0.0)
+    cane (2.2.1)
+      parallel
     capybara (1.1.2)
       mime-types (>= 1.16)
       nokogiri (>= 1.3.3)
@@ -33,7 +34,7 @@ GEM
     diff-lcs (1.1.3)
     faraday (0.8.4)
       multipart-post (~> 1.1)
-    fdoc (0.2.4)
+    fdoc (0.2.6)
       json
       json-schema (>= 1.0.1)
       kramdown
@@ -56,6 +57,7 @@ GEM
     multipart-post (1.1.5)
     nokogiri (1.5.5)
     nokogiri (1.5.5-java)
+    parallel (0.5.18)
     rack (1.4.1)
     rack-protection (1.2.0)
       rack
