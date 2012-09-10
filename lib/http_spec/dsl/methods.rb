@@ -8,12 +8,16 @@ module HTTPSpec
         methods.each do |method|
           define_method(method) do |path, body="", headers={}|
             request = Request.new(method, path, body, headers)
-            HTTPSpec.dispatch(request)
+            @last_response = HTTPSpec.dispatch(request)
           end
         end
       end
 
       define_actions :get, :post, :put, :patch, :delete, :options, :head
+
+      def last_response
+        @last_response or raise "No request yet."
+      end
     end
   end
 end

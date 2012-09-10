@@ -16,4 +16,17 @@ describe "methods dsl" do
       response.headers.should eq("response" => "header")
     end
   end
+
+  it "exposes the last response" do
+    [:get, :post, :put, :patch, :delete, :options, :head].each do |method|
+      send(method, "/path")
+      last_response.status.should eq(200)
+      last_response.body.should eq("response body")
+      last_response.headers.should eq("response" => "header")
+    end
+  end
+
+  it "raises if no request has been made" do
+    expect { last_response }.to raise_error("No request yet.")
+  end
 end
