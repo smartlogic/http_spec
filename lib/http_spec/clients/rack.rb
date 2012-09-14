@@ -4,8 +4,9 @@ require "rack/mock"
 module HTTPSpec
   module Clients
     class Rack
-      def initialize(app)
+      def initialize(app, env = {})
         @session = ::Rack::MockRequest.new(app)
+        @env = env
       end
 
       def dispatch(request)
@@ -21,7 +22,7 @@ module HTTPSpec
       end
 
       def headers_to_env(headers)
-        headers.inject({}) do |env, (k, v)|
+        headers.inject(@env) do |env, (k, v)|
           k = k.tr("-", "_").upcase
           k = "HTTP_#{k}" unless %w{CONTENT_TYPE CONTENT_LENGTH}.include?(k)
           env.merge(k => v)

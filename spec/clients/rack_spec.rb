@@ -56,4 +56,11 @@ describe HTTPSpec::Clients::Rack do
     response = client.dispatch(request)
     Marshal.load(Marshal.dump(response)).should eq(response)
   end
+
+  it "can be created in a controlled environment" do
+    env = { "REMOTE_ADDR" => "192.0.43.10" }
+    client = HTTPSpec::Clients::Rack.new(app, env)
+    client.dispatch(HTTPSpec::Request.new(:get, "/path", "", {}))
+    @env["REMOTE_ADDR"].should eq("192.0.43.10")
+  end
 end
