@@ -16,6 +16,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "faraday"
   s.add_development_dependency "fdoc"
   s.add_development_dependency "raddocs"
+  s.add_development_dependency "http_parser.rb"
 
   s.add_development_dependency "rspec"
   s.add_development_dependency "rake"
