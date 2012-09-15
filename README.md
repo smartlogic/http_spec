@@ -8,7 +8,7 @@ RSpec DSLs for describing API behaviors
 
 ## Features
 
-* Supports Rack, Webmachine, and live applications (via Faraday) using pluggable client back-ends.
+* Supports Rack, Webmachine, CGI, and live applications (via Faraday) using pluggable client back-ends.
 * Generate documentation from requests with Raddocs.
 * Validate requests and responses against a schema with Fdoc.
 * Record and play back responses to speed-up tests against live applications. (like VCR)
