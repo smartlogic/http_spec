@@ -1,5 +1,6 @@
 require "http_spec"
 require "http_spec/types"
+require "uri"
 
 module HTTPSpec
   module DSL
@@ -36,7 +37,8 @@ module HTTPSpec
       end
 
       def do_request(options = {})
-        @last_response = HTTPSpec.dispatch(build_request(options))
+        request = RequestBuilder.new(self, options).build
+        @last_response = HTTPSpec.dispatch(request)
       end
 
       def status
@@ -52,26 +54,55 @@ module HTTPSpec
         @last_response.body
       end
 
-      private
+      class RequestBuilder
+        attr_reader :body
 
-      def build_request(options)
-        request = example.metadata[:request]
-        path = build_path(request, options)
-        body = options.fetch(:body, "")
-        headers = example.metadata[:default_headers]
-        headers.merge!(options.fetch(:headers, {}))
-        Request.new(request.method, path, body, headers)
-      end
+        def initialize(context, options)
+          @context = context
+          @options = options
+          @body = options.fetch(:body, "")
+          @headers = options.fetch(:headers, {})
+          @query = options.fetch(:query, {})
+        end
 
-      def build_path(request, options)
-        request.path.gsub(/:(\w+)/) do |match|
-          if options.key?($1.to_sym)
-            options[$1.to_sym]
-          elsif respond_to?($1)
-            send($1)
+        def build
+          Request.new(method, path, body, headers)
+        end
+
+        def method
+          metadata[:request].method
+        end
+
+        def path
+          if query.empty?
+            substituted_path
           else
-            match
+            "#{substituted_path}?#{query}"
           end
+        end
+
+        def headers
+          metadata[:default_headers].merge(@headers)
+        end
+
+        def metadata
+          @context.example.metadata
+        end
+
+        def substituted_path
+          metadata[:request].path.gsub(/:(\w+)/) do |match|
+            if @options.key?($1.to_sym)
+              @options[$1.to_sym]
+            elsif @context.respond_to?($1)
+              @context.send($1)
+            else
+              match
+            end
+          end
+        end
+
+        def query
+          ::URI.encode_www_form(@query)
         end
       end
     end

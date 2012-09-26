@@ -40,6 +40,13 @@ describe "resource dsl" do
         response_status.should eq(200)
       end
 
+      it "adds query params to the path" do
+        client.should_receive(:dispatch) do |request|
+          request.path.should eq("/:foo/:id?foo=bar&baz=quux")
+        end
+        do_request :query => { "foo" => "bar", "baz" => "quux" }
+      end
+
       it "substitutes values in the route" do
         client.should_receive(:dispatch) do |request|
           request.path.should eq("/:foo/1")
