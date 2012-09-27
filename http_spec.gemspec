@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = "http_spec"
-  s.version = "0.2.0"
+  s.version = "0.3.0"
   s.platform = Gem::Platform::RUBY
   s.summary = "RSpec DSL for describing API behaviors"
   s.homepage = "https://github.com/smartlogic/http_spec"
