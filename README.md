@@ -69,3 +69,11 @@ describe "My Awesome App" do
   end
 end
 ```
+
+## Changes
+
+### 0.3.0
+
+* Expose `last_response` when using the methods dsl
+* Allow rack client to control the cgi environment
+* [Bug] Fix issue where group-level headers where being mutated by examples
