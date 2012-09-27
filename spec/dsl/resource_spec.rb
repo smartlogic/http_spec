@@ -90,6 +90,18 @@ describe "resource dsl" do
           do_request :headers => { "Content-Length" => "100" }
         end
 
+        it "doesn't modify the group-level headers" do
+          headers = []
+          client.stub(:dispatch) do |request|
+            headers << request.headers["Accept"]
+          end
+
+          do_request :headers => { "Accept" => "text/plain" }
+          do_request
+
+          headers.should eq(["text/plain", "text/html"])
+        end
+
         context "two levels deep" do
           header "Content-Type", "application/xml"
           header "Content-Length", "100"

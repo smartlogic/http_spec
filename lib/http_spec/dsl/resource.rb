@@ -56,11 +56,12 @@ module HTTPSpec
 
       def build_request(options)
         request = example.metadata[:request]
-        path = build_path(request, options)
-        body = options.fetch(:body, "")
-        headers = example.metadata[:default_headers]
-        headers.merge!(options.fetch(:headers, {}))
-        Request.new(request.method, path, body, headers)
+        Request.new(
+          request.method,
+          build_path(request, options),
+          options.fetch(:body, ""),
+          example.metadata[:default_headers].merge(options.fetch(:headers, {}))
+        )
       end
 
       def build_path(request, options)
