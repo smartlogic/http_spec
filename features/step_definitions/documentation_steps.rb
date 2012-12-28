@@ -35,8 +35,9 @@ Then /^the response status should be (\d+)$/ do |status|
 end
 
 Then /^the response headers should be:$/ do |table|
-  headers = table.raw.map { |row| row.join(": ") }.join("\n")
-  @raddocs.should have_css(".response .headers .headers", :text => headers)
+  table.raw.each do |row|
+    @raddocs.should have_css(".response .headers .headers", :text => row.join(": "))
+  end
 end
 
 Then /^the response body should be "(.*?)"$/ do |body|
