@@ -46,8 +46,7 @@ Feature: Record Responses
       """
     When  I successfully run `rspec app_spec.rb --require ./app.rb`
     And   I successfully run `rspec app_spec.rb --require ./app.rb`
-    Then  the first run should take about 1 second
-    And   the second run should be much faster
+    Then  the second run should be about 1 second faster than the first
 
   Scenario: Requests are recorded in the correct order
     Given a file named "app_spec.rb" with:
