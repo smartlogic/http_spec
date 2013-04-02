@@ -1,7 +1,8 @@
 if ENV["COVERAGE"]
   require "simplecov"
+  require "coveralls"
 
-  SimpleCov.formatter = Class.new do
+  class HTMLFormatterWithCoveredPercent
     def format(result)
       SimpleCov::Formatter::HTMLFormatter.new.format(result)
       File.open("coverage/covered_percent", "w") do |f|
@@ -9,6 +10,11 @@ if ENV["COVERAGE"]
       end
     end
   end
+
+  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
+    HTMLFormatterWithCoveredPercent,
+    Coveralls::SimpleCov::Formatter
+  ]
 
   SimpleCov.start
 end
