@@ -1,6 +1,7 @@
-[![Travis status](https://secure.travis-ci.org/smartlogic/http_spec.png)](https://secure.travis-ci.org/smartlogic/http_spec)
-[![Gemnasium status](https://gemnasium.com/smartlogic/http_spec.png)](https://gemnasium.com/smartlogic/http_spec)
-[![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/smartlogic/http_spec)
+[![Build Status](https://travis-ci.org/smartlogic/http_spec.png?branch=master)](https://travis-ci.org/smartlogic/http_spec)
+[![Dependency Status](https://gemnasium.com/smartlogic/http_spec.png)](https://gemnasium.com/smartlogic/http_spec)
+[![Code Climate](https://codeclimate.com/github/smartlogic/http_spec.png)](https://codeclimate.com/github/smartlogic/http_spec)
+[![Coverage Status](https://coveralls.io/repos/smartlogic/http_spec/badge.png?branch=master)](https://coveralls.io/r/smartlogic/http_spec)
 
 # HTTPSpec
 
