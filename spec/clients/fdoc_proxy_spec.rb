@@ -3,7 +3,7 @@ require "http_spec/clients/fdoc_proxy"
 
 describe HTTPSpec::Clients::FdocProxy do
   let(:client) { HTTPSpec::Clients::FdocProxy.new(inner, "spec/fixtures/fdoc") }
-  let(:inner) { stub }
+  let(:inner) { double }
 
   it "proxies requests to an inner application" do
     request = HTTPSpec::Request.new(:get, "/path", "", {})

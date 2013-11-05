@@ -22,7 +22,7 @@ end
 Dir[File.expand_path("../support/**/*.rb", __FILE__)].each &method(:require)
 
 def mock_client(&block)
-  client = stub
+  client = double
   client.stub(:dispatch, &block)
   client
 end
