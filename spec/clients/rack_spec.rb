@@ -14,20 +14,20 @@ describe HTTPSpec::Clients::Rack do
   it "issues requests to the app" do
     request = HTTPSpec::Request.new(:get, "/path", "", {})
     client.dispatch(request)
-    @env["REQUEST_METHOD"].should eq("GET")
-    @env["PATH_INFO"].should eq("/path")
+    expect(@env["REQUEST_METHOD"]).to eq("GET")
+    expect(@env["PATH_INFO"]).to eq("/path")
   end
 
   it "accepts query parameters as part of the path" do
     request = HTTPSpec::Request.new(:get, "/path?query=string", "", {})
     client.dispatch(request)
-    @env["QUERY_STRING"].should eq("query=string")
+    expect(@env["QUERY_STRING"]).to eq("query=string")
   end
 
   it "sends the response body as input" do
     request = HTTPSpec::Request.new(:post, "/path", "foobarbaz", {})
     client.dispatch(request)
-    @env["rack.input"].read.should eq("foobarbaz")
+    expect(@env["rack.input"].read).to eq("foobarbaz")
   end
 
   it "converts headers to env before requesting" do
@@ -38,29 +38,29 @@ describe HTTPSpec::Clients::Rack do
     }
     request = HTTPSpec::Request.new(:get, "/path", "", headers)
     client.dispatch(request)
-    @env["CONTENT_TYPE"].should eq("x-foo-bar")
-    @env["CONTENT_LENGTH"].should eq("10")
-    @env["HTTP_FOO"].should eq("Bar")
+    expect(@env["CONTENT_TYPE"]).to eq("x-foo-bar")
+    expect(@env["CONTENT_LENGTH"]).to eq("10")
+    expect(@env["HTTP_FOO"]).to eq("Bar")
   end
 
   it "returns the response" do
     request = HTTPSpec::Request.new(:get, "/path", "", {})
     response = client.dispatch(request)
-    response.status.should eq(200)
-    response.headers["Foo"].should eq("Bar")
-    response.body.should eq("hello")
+    expect(response.status).to eq(200)
+    expect(response.headers["Foo"]).to eq("Bar")
+    expect(response.body).to eq("hello")
   end
 
   it "returns a serializable response" do
     request = HTTPSpec::Request.new(:get, "/path", "", {})
     response = client.dispatch(request)
-    Marshal.load(Marshal.dump(response)).should eq(response)
+    expect(Marshal.load(Marshal.dump(response))).to eq(response)
   end
 
   it "can be created in a controlled environment" do
     env = { "REMOTE_ADDR" => "192.0.43.10" }
     client = HTTPSpec::Clients::Rack.new(app, env)
     client.dispatch(HTTPSpec::Request.new(:get, "/path", "", {}))
-    @env["REMOTE_ADDR"].should eq("192.0.43.10")
+    expect(@env["REMOTE_ADDR"]).to eq("192.0.43.10")
   end
 end

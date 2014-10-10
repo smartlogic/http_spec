@@ -23,7 +23,7 @@ describe HTTPSpec::Clients::VCRProxy do
   end
 
   it "proxies requests to an inner client" do
-    client.dispatch(hello).should eq(greeting)
+    expect(client.dispatch(hello)).to eq(greeting)
   end
 
   it "returns a recorded response when replayed" do
@@ -31,9 +31,9 @@ describe HTTPSpec::Clients::VCRProxy do
     two = HTTPSpec::Clients::VCRProxy.new(inner, "cassette", dir)
     one.dispatch(hello)
     one.dispatch(goodbye)
-    inner.should_not_receive(:dispatch)
-    two.dispatch(hello).should eq(greeting)
-    two.dispatch(goodbye).should eq(farewell)
+    expect(inner).not_to receive(:dispatch)
+    expect(two.dispatch(hello)).to eq(greeting)
+    expect(two.dispatch(goodbye)).to eq(farewell)
   end
 
   it "errors when the replayed requests do not match the recording" do

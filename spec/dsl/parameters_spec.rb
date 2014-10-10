@@ -5,7 +5,7 @@ describe "parameters dsl" do
   include HTTPSpec::DSL::Parameters
 
   it "has empty params by default" do
-    params.should eq({})
+    expect(params).to eq({})
   end
 
   context "when parameters are defined" do
@@ -15,16 +15,16 @@ describe "parameters dsl" do
     let(:name) { "test name" }
 
     it "indexes the parameter values in params" do
-      params.should eq(:name => "test name")
+      expect(params).to eq(:name => "test name")
     end
 
     it "lets examples mutate param values" do
       params[:name] = "other name"
-      params[:name].should eq("other name")
+      expect(params[:name]).to eq("other name")
     end
 
-    it "stores parameter information in metadata" do
-      example.metadata[:parameters].should eq([
+    it "stores parameter information in metadata" do |example|
+      expect(example.metadata[:parameters]).to eq([
         { :name => :name, :description => "the name", :foo => :bar },
         { :name => :owner, :description => "the owner" }
       ])
@@ -34,8 +34,8 @@ describe "parameters dsl" do
       parameter :cost, "the cost"
       parameter :location, "the location"
 
-      it "includes parameters from outer contexts" do
-        example.metadata[:parameters].should eq([
+      it "includes parameters from outer contexts" do |example|
+        expect(example.metadata[:parameters]).to eq([
           { :name => :name, :description => "the name", :foo => :bar },
           { :name => :owner, :description => "the owner" },
           { :name => :cost, :description => "the cost" },

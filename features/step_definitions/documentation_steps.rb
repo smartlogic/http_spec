@@ -9,7 +9,7 @@ Then /^the following (.*?) examples should be listed:$/ do |resource_name, table
   end
   actual = resource.all(".example").map { |example| example.text.strip }
   expected = table.raw.map(&:first)
-  actual.should eq(expected)
+  expect(actual).to eq(expected)
 end
 
 When /^I view documentation for "(.*?)"$/ do |example|
@@ -23,23 +23,23 @@ Then /^the parameters should be:$/ do |table|
     [name, description]
   end
   expected = table.raw
-  actual.should eq(expected)
+  expect(actual).to eq(expected)
 end
 
 Then /^the request route should be "(.*?)"$/ do |route|
-  @raddocs.should have_css(".request .route .route", :text => route)
+  expect(@raddocs).to have_css(".request .route .route", :text => route)
 end
 
 Then /^the response status should be (\d+)$/ do |status|
-  @raddocs.should have_css(".response .status .status", :text => status)
+  expect(@raddocs).to have_css(".response .status .status", :text => status)
 end
 
 Then /^the response headers should be:$/ do |table|
   table.raw.each do |row|
-    @raddocs.should have_css(".response .headers .headers", :text => row.join(": "))
+    expect(@raddocs).to have_css(".response .headers .headers", :text => row.join(": "))
   end
 end
 
 Then /^the response body should be "(.*?)"$/ do |body|
-  @raddocs.should have_css(".response .body .content", :text => body)
+  expect(@raddocs).to have_css(".response .body .content", :text => body)
 end

@@ -31,7 +31,7 @@ Feature: Record Responses
       describe "Slow App" do
         include HTTPSpec::DSL::Methods
 
-        before do
+        before do |example|
           HTTPSpec.client = HTTPSpec::Clients::VCRProxy.new(
             HTTPSpec::Clients::Rack.new(App.new),
             example.full_description
@@ -40,7 +40,7 @@ Feature: Record Responses
 
         it "says hello" do
           response = get "/wait"
-          response.body.should eq("Hello, World!")
+          expect(response.body).to eq("Hello, World!")
         end
       end
       """
@@ -58,7 +58,7 @@ Feature: Record Responses
       describe "Counting App" do
         include HTTPSpec::DSL::Methods
 
-        before do
+        before do |example|
           HTTPSpec.client = HTTPSpec::Clients::VCRProxy.new(
             HTTPSpec::Clients::Rack.new(App.new),
             example.full_description
@@ -66,8 +66,8 @@ Feature: Record Responses
         end
 
         it "maintains a count" do
-          get("/count").body.should eq("1")
-          get("/count").body.should eq("2")
+          expect(get("/count").body).to eq("1")
+          expect(get("/count").body).to eq("2")
         end
       end
       """

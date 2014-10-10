@@ -55,6 +55,7 @@ module HTTPSpec
       private
 
       def build_request(options)
+        example = RSpec.current_example
         request = example.metadata[:request]
         Request.new(
           request.method,

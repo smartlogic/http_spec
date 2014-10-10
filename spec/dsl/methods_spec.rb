@@ -11,18 +11,18 @@ describe "methods dsl" do
   it "delegates simple requests to a client" do
     [:get, :post, :put, :patch, :delete, :options, :head].each do |method|
       response = send(method, "/path")
-      response.status.should eq(200)
-      response.body.should eq("response body")
-      response.headers.should eq("response" => "header")
+      expect(response.status).to eq(200)
+      expect(response.body).to eq("response body")
+      expect(response.headers).to eq("response" => "header")
     end
   end
 
   it "exposes the last response" do
     [:get, :post, :put, :patch, :delete, :options, :head].each do |method|
       send(method, "/path")
-      last_response.status.should eq(200)
-      last_response.body.should eq("response body")
-      last_response.headers.should eq("response" => "header")
+      expect(last_response.status).to eq(200)
+      expect(last_response.body).to eq("response body")
+      expect(last_response.headers).to eq("response" => "header")
     end
   end
 

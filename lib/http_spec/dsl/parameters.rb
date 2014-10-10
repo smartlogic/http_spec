@@ -22,9 +22,9 @@ module HTTPSpec
       end
 
       def params
-        return {} unless example.metadata[:parameters]
+        return {} unless RSpec.current_example.metadata[:parameters]
         @params ||= {}
-        example.metadata[:parameters].each do |param|
+        RSpec.current_example.metadata[:parameters].each do |param|
           name = param[:name]
           @params[name] ||= send(name) if respond_to?(name)
         end

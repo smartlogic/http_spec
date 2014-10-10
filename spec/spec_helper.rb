@@ -16,13 +16,15 @@ if ENV["COVERAGE"]
     Coveralls::SimpleCov::Formatter
   ]
 
-  SimpleCov.start
+  SimpleCov.start do
+    root "lib"
+  end
 end
 
 Dir[File.expand_path("../support/**/*.rb", __FILE__)].each &method(:require)
 
 def mock_client(&block)
   client = double
-  client.stub(:dispatch, &block)
+  allow(client).to receive(:dispatch, &block)
   client
 end

@@ -16,7 +16,7 @@ describe HTTPSpec::Clients::RaddocsProxy do
                                                  :resource_name => "foo",
                                                  :description => "bar")
     response = HTTPSpec::Response.new(200, "", {})
-    inner.should_receive(:dispatch).with(request).and_return(response)
+    expect(inner).to receive(:dispatch).with(request).and_return(response)
     client.dispatch(request)
   end
 
@@ -36,7 +36,7 @@ describe HTTPSpec::Clients::RaddocsProxy do
     c.dispatch(request) # indexes > 1 resource
     File.open("tmp/docs/index.json", "r") do |file|
       index = JSON.load(file)
-      index.should eq(
+      expect(index).to eq(
         "resources" => [
           {
             "name" => "foo", "examples" => [
@@ -64,7 +64,7 @@ describe HTTPSpec::Clients::RaddocsProxy do
     client.dispatch(baz)
     File.open("tmp/docs/foo/bar.json", "r") do |file|
       index = JSON.load(file)
-      index.should eq(
+      expect(index).to eq(
         "resource" => "foo",
         "description" => "bar",
         "explanation" => nil,

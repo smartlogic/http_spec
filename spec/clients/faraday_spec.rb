@@ -19,30 +19,30 @@ describe HTTPSpec::Clients::Faraday do
   it "issues requests to the app" do
     request = HTTPSpec::Request.new(:get, "/path", "", {})
     response = client.dispatch(request)
-    response.status.should eq(200)
+    expect(response.status).to eq(200)
   end
 
   it "passes through the request body" do
     request = HTTPSpec::Request.new(:get, "/path", "hello", {})
     response = client.dispatch(request)
-    response.body.should eq("hello")
+    expect(response.body).to eq("hello")
   end
 
   it "passes through the request headers" do
     request = HTTPSpec::Request.new(:get, "/path", "", "Foo" => "Bar")
     response = client.dispatch(request)
-    response.headers["Foo"].should eq("Bar")
+    expect(response.headers["Foo"]).to eq("Bar")
   end
 
   it "accepts query parameters as part of the path" do
     request = HTTPSpec::Request.new(:get, "/path?query=string", "", {})
     response = client.dispatch(request)
-    response.headers["Query"].should eq("string")
+    expect(response.headers["Query"]).to eq("string")
   end
 
   it "returns a serializable response" do
     request = HTTPSpec::Request.new(:get, "/path", "", {})
     response = client.dispatch(request)
-    Marshal.load(Marshal.dump(response)).should eq(response)
+    expect(Marshal.load(Marshal.dump(response))).to eq(response)
   end
 end

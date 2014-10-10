@@ -8,7 +8,7 @@ describe HTTPSpec::Clients::FdocProxy do
   it "proxies requests to an inner application" do
     request = HTTPSpec::Request.new(:get, "/path", "", {})
     response = HTTPSpec::Response.new(200, "", {})
-    inner.should_receive(:dispatch).with(request).and_return(response)
+    expect(inner).to receive(:dispatch).with(request).and_return(response)
     client.dispatch(request)
   end
 
@@ -22,7 +22,7 @@ describe HTTPSpec::Clients::FdocProxy do
   it "raises an exception if the response is invalid" do
     request = HTTPSpec::Request.new(:get, "/error", "", {})
     response = HTTPSpec::Response.new(200, '{}', {})
-    inner.stub(:dispatch).with(request).and_return(response)
+    allow(inner).to receive(:dispatch).with(request).and_return(response)
     expect {
       client.dispatch(request)
     }.to raise_error(JSON::Schema::ValidationError, /foo/)
