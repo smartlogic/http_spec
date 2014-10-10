@@ -2,3 +2,6 @@
 .rvmrc
 coverage
 tmp
+Gemfile.lock
+.bundle
+bin
