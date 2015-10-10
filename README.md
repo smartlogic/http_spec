@@ -73,6 +73,10 @@ end
 
 ## Changes
 
+### 0.4.0
+
+* Support latest versions of RSpec, Raddocs, Webmachine
+
 ### 0.3.0
 
 * Expose `last_response` when using the methods dsl
