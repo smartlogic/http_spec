@@ -3,7 +3,7 @@ require "http_spec/clients/webmachine"
 
 class FakeResource < Webmachine::Resource
   def initialize
-    response.headers["Foo"] = request["Foo"]
+    response.headers["Host"] = request["Host"]
     response.headers["Query"] = request.uri.query
   end
 
@@ -26,33 +26,34 @@ describe HTTPSpec::Clients::Webmachine do
   end
 
   let(:client) { HTTPSpec::Clients::Webmachine.new(app) }
+  let(:headers) {{ "Host" => "localhost" }}
 
   it "issues requests to the app" do
-    request = HTTPSpec::Request.new(:get, "/path", "", {})
+    request = HTTPSpec::Request.new(:get, "/path", "", headers)
     response = client.dispatch(request)
     expect(response.status).to eq(200)
   end
 
   it "passes through the request body" do
-    request = HTTPSpec::Request.new(:get, "/path", "hello", {})
+    request = HTTPSpec::Request.new(:get, "/path", "hello", headers)
     response = client.dispatch(request)
     expect(response.body).to eq("hello")
   end
 
   it "passes through the request headers" do
-    request = HTTPSpec::Request.new(:get, "/path", "", "Foo" => "Bar")
+    request = HTTPSpec::Request.new(:get, "/path", "", headers)
     response = client.dispatch(request)
-    expect(response.headers["Foo"]).to eq("Bar")
+    expect(response.headers["Host"]).to eq("localhost")
   end
 
   it "accepts query parameters as part of the path" do
-    request = HTTPSpec::Request.new(:get, "/path?query=string", "", {})
+    request = HTTPSpec::Request.new(:get, "/path?query=string", "", headers)
     response = client.dispatch(request)
     expect(response.headers["Query"]).to eq("query=string")
   end
 
   it "returns a serializable response" do
-    request = HTTPSpec::Request.new(:get, "/path", "", {})
+    request = HTTPSpec::Request.new(:get, "/path", "", headers)
     response = client.dispatch(request)
     expect(Marshal.load(Marshal.dump(response))).to eq(response)
   end

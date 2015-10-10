@@ -115,6 +115,7 @@ module HTTPSpec
             "description" => description,
             "explanation" => explanation,
             "parameters" => parameters,
+            "response_fields" => [],
             "requests" => requests
           }
           serializer.dump(content, io)

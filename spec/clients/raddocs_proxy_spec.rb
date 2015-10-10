@@ -69,6 +69,7 @@ describe HTTPSpec::Clients::RaddocsProxy do
         "description" => "bar",
         "explanation" => nil,
         "parameters" => nil,
+        "response_fields" => [],
         "requests" => [
           {
             "request_headers" => { "foo" => "bar" },

@@ -4,7 +4,7 @@ When /^I load Raddocs$/ do
 end
 
 Then /^the following (.*?) examples should be listed:$/ do |resource_name, table|
-  resource = @raddocs.all(".resource").detect do |resource|
+  resource = @raddocs.all(".main .resource").detect do |resource|
     resource.find("h2").text == resource_name
   end
   actual = resource.all(".example").map { |example| example.text.strip }
@@ -13,7 +13,7 @@ Then /^the following (.*?) examples should be listed:$/ do |resource_name, table
 end
 
 When /^I view documentation for "(.*?)"$/ do |example|
-  @raddocs.click_link example
+  @raddocs.click_link example, match: :first
 end
 
 Then /^the parameters should be:$/ do |table|
