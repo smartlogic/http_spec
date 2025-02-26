@@ -73,6 +73,10 @@ end
 
 ## Changes
 
+### 1.0.0
+
+* Support for ruby 3.X - fixes for stdlib API changes
+
 ### 0.4.0
 
 * Support latest versions of RSpec, Raddocs, Webmachine
