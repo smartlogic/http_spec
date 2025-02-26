@@ -48,7 +48,7 @@ module HTTPSpec
       end
 
       def load_or_new(klass, filepath, *args)
-        if File.exists?(filepath)
+        if File.exist?(filepath)
           File.open(filepath, "r") { |file| klass.load(file) }
         else
           klass.new(*args)

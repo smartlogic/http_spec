@@ -26,7 +26,7 @@ module HTTPSpec
         end
 
         def new?
-          @new ||= !File.exists?(@filepath)
+          @new ||= !File.exist?(@filepath)
         end
 
         def record(request, response)
@@ -47,7 +47,7 @@ module HTTPSpec
 
         def cache
           @cache ||=
-            if File.exists?(@filepath)
+            if File.exist?(@filepath)
               File.open(@filepath, "r+") do |file|
                 Marshal.load(file)
               end
